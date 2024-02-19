@@ -1,0 +1,53 @@
+version: '3.9'
+
+services:
+  {{ role_name }}:
+    image: mariadb:10.4
+    hostname: "{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}"
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    ports:
+      - "3306:3306"
+    deploy:
+      endpoint_mode: vip
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.fstype == glusterfs
+{% if stacks[stack_name][role_name]['placement'] is defined %}
+          - node.labels.name == {{ stacks[stack_name][role_name]['placement'] }}
+{% endif %}
+    configs:
+      - source: mysql.cnf
+        target: /etc/mysql/conf.d/custom.cnf
+      - source: init-db.sql
+        target: /docker-entrypoint-initdb.d/01.sql
+    networks: {{ stacks[stack_name][role_name]['networks'] | list }}
+    extra_hosts: {{ stacks[stack_name][role_name]['extra_hosts'] }}
+    volumes:
+      - {{ domain_volumes }}/{{ stack_name }}/{{ role_name }}/data:/var/lib/mysql
+
+#  ubuntu:
+#    image: ubuntu
+#    hostname: "{% raw %}{{.Service.Name}}{% endraw %}"
+#    environment:
+#      REPLICAS: *replicas
+#    networks:
+#      - keydb_default
+#    command: '/bin/bash -c "apt-get update && apt-get -y install telnet iputils-ping mariadb-client-10.4 && sleep 100000"'
+
+configs:
+  mysql.cnf:
+    name: {{ config_files['mysql.cnf']['name'] }}
+    external: true
+  init-db.sql:
+    name: {{ config_files['init-db.sql']['name'] }}
+    external: true
+
+networks: {{ stacks[stack_name][role_name]['networks'] }}
+
+#volumes:
+#  mariadb:
+#    name: 'mariadb'
+#    name: '{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}'

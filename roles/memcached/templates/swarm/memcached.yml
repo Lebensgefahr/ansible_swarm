@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+  {{ role_name }}:
+    image: memcached
+    hostname: "{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}"
+    environment:
+      NODENAME: rabbit@rabbitmq
+#    ports:
+#      - "15672:15672"
+#      - "5672:5672"
+    deploy:
+      endpoint_mode: vip
+      restart_policy:
+        condition: on-failure
+{% if stacks[stack_name][role_name]['placement'] is defined %}
+      placement:
+        constraints: [node.labels.name == {{ stacks[stack_name][role_name]['placement'] }}]
+{% endif %}
+    networks: {{ stacks[stack_name][role_name]['networks'] | list }}
+    extra_hosts: {{ stacks[stack_name][role_name]['extra_hosts'] }}
+    volumes:
+      - /etc/localtime:/etc/localtime
+
+networks: {{ stacks[stack_name][role_name]['networks'] }}
+
+#volumes:
+#  rabbitmq:
+#    name: 'rabbitmq'
+#    name: '{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}'

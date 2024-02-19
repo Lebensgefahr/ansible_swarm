@@ -1,0 +1,164 @@
+version: '3.9'
+
+services:
+  cadvisor:
+    image: google/cadvisor
+    hostname: "{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+      - /etc/localtime:/etc/localtime:ro
+    devices:
+      - /dev/kmsg:/dev/kmsg
+    networks:
+      - {{ role_name }}
+    deploy:
+      mode: global
+      resources:
+        limits:
+          memory: 128M
+
+  node-exporter:
+    image: docker-hub.domain.ru/docker_swarm/node-exporter:1
+    hostname: "{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+      - /etc/hostname:/etc/host_hostname:ro
+      - /etc/hostname:/etc/nodename:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 9100:9100
+    environment:
+      - HOST_HOSTNAME=/etc/host_hostname
+      - NODE_HOSTNAME={% raw %}{{.Node.Hostname}}{% endraw %}
+
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--ssc.filesystem.ignored-mount-points'
+      - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
+      - '--ssc.textfile.directory=/etc/node-exporter/'
+    networks:
+      - {{ role_name }}
+    deploy:
+      mode: global
+      resources:
+        limits:
+          memory: 128M
+
+  blackbox-exporter:
+    image: prom/blackbox-exporter:v0.23.0
+    hostname: "{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}"
+    networks:
+      - {{ role_name }}
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        limits:
+          memory: 64M
+
+  alertmanager:
+    image: prom/alertmanager:v0.24.0
+    ports:
+      - "9093:9093"
+    configs:
+      - source: alertmanager.yml
+        target: /etc/alertmanager/config.yml
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+      - '--storage.path=/alertmanager'
+    volumes:
+      - alertmanager:/alertmanager
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - {{ role_name }}
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+           - node.role==manager
+      resources:
+        limits:
+          memory: 100M
+
+  prometheus:
+    image: prom/prometheus:v2.40.1
+    ports:
+      - "9090:9090"
+    volumes:
+      - prometheus_config:/etc/prometheus
+      - prometheus_data:/prometheus
+      - /etc/localtime:/etc/localtime:ro
+    configs:
+      - source: prometheus.yml
+        target: /etc/prometheus/prometheus.yml
+      - source: alert.rules
+        target: /etc/prometheus/alert.rules
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.external-url=http://172.16.0.99:9090'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+    networks:
+      - {{ role_name }}
+    deploy:
+      placement:
+        constraints:
+          - node.role==manager
+      resources:
+        limits:
+          memory: 500M
+
+  grafana:
+    image: grafana/grafana:9.2.4
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+#      - GF_SERVER_ROOT_URL=http://172.16.0.99
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel
+      - PROMETHEUS_ENDPOINT=http://prometheus:9090
+    ports:
+      - "3030:3000"
+    networks:
+      - {{ role_name }}
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role==manager
+      resources:
+        limits:
+          memory: 384M
+
+networks:
+  {{ role_name }}:
+    name: {{ role_name }}
+    driver: overlay
+    attachable: true
+
+volumes:
+  prometheus_config:
+  prometheus_data:
+  grafana_data:
+  alertmanager:
+
+configs:
+  alertmanager.yml:
+    name: {{ config_files['alertmanager.yml']['name'] }}
+    external: true
+  prometheus.yml:
+    name: {{ config_files['prometheus.yml']['name'] }}
+    external: true
+  alert.rules:
+    name: {{ config_files['alert.rules']['name'] }}
+    external: true

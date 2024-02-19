@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--use -Dlogging.config property to override -->
+<configuration>
+    <jmxConfigurator/>
+
+
+    <conversionRule conversionWord="clr"
+                    converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+    <conversionRule conversionWord="wEx"
+                    converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
+
+    <property name="CONSOLE_LOG_PATTERN"
+              value="%clr(%d{dd.MM.yyyy HH:mm:ss.SSS}){faint} %clr([%t]){faint} %clr([%p]) %clr(%c){cyan} %X %m%n%wEx"/>
+    <property name="FILE_LOG_PATTERN"
+              value="%d{dd.MM.yyyy HH:mm:ss.SSS} [%t] [%p] %c %X %m%n%wEx"/>
+
+    <property name="LOG_FILE_ROOT" value="${catalina.base:-build}/logs"/>
+
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.apache.catalina" level="ERROR"/>
+    <logger name="org.hibernate" level="ERROR"/>
+    <logger name="org.flywaydb" level="INFO"/>
+    <logger name="ru.domain.app.util.Stopwatch" level="INFO"/>
+    <logger name="ru.domain.app.http.HttpService" level="DEBUG"/>
+    <logger name="ru.domain.app.video.VideoServiceClient" level="INFO"/>
+    <logger name="ru.domain.app.util.sql.SqlUtils" level="INFO"/>
+    <logger name="ru.domain.app.billing.BillingRateLoader" level="INFO"/>
+    <logger name="grails.app.services.ru.domain.app.statistics.BrowserStatisticsService" level="INFO"/>
+    <logger name="ru.domain.app.statistics.BrowserStatisticsService$FlushTask" level="INFO"/>
+    <logger name="ru.domain.app.util.HttpRequestUtil" level="INFO"/>
+    <logger name="grails.app.services.ru.domain.app.http.UserAgentIdentService" level="INFO"/>
+
+    <logger name="ru.domain.app" level="DEBUG"/>
+
+    <root level="ERROR">
+        <appender-ref ref="stdout"/>
+    </root>
+
+</configuration>

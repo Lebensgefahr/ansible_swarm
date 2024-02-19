@@ -1,0 +1,12 @@
+[mariadb]
+character-set-server=utf8
+lower_case_table_names
+max_connections=5000
+#slow_query_log
+#slow_query_log_file=/var/lib/mysql/slow-query.log
+#general_log
+#general_log_file=/var/lib/mysql/mariadb.log
+
+
+[client]
+default-character-set=utf8

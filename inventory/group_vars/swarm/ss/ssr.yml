@@ -1,0 +1,24 @@
+JAVA_OPTS: -Dss.mode=streamer
+           -Dapp.integration.enabled=true
+           -Dapp.url=http://app:8080
+           -Dapp.login=admin
+           -Dapp.password=uWJ6miT9DvsvCvR
+           -Dapp.external.update.period=24
+           -Dhttp.port=8080
+           -Dssc.mongo=mongodb://mongo-ssc:27017/ssc
+           -Dssr.db=mongodb://mongo-ssr:27017/ssr
+           -Dlogback.configurationFile=logback.xml
+           -Dlogger.resource=logback.xml
+           -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5000
+           -Dakka.remote.netty.tcp.hostname=ssr
+           -Dakka.remote.netty.tcp.port=2552
+           -Dakka.remote.netty.tcp.bind-hostname=0.0.0.0
+           -Dakka.remote.netty.tcp.bind-port=2552
+           -Dssc.akka=ssc:2552
+#           -Dssrc.akka=ssrc:2552
+#           -Dssc.rabbitmq.amq=ssc:ssc@rabbitmq:5672/stat-server.topic/monitoring.statServerEvents.amq-client/monitoring.
+#           -Dcamerastatus.rabbitmq=ssc:ssc@rabbitmq:5672/ss-mw.topic/ss-mw/#
+#           -Dssc.events.size=2
+#           -Dssr.events.size=2
+#           -Dapp.sendCameraStatusInAnyCase=false
+#DB_URI: mongodb://mongo-ssr:27017/ssr

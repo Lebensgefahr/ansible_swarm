@@ -1,0 +1,9 @@
+---
+- name: Loop over src service TASK
+  include_tasks: loop-over-dst-stack.yml
+  with_dict: "{{ connections[src_stack_name.key][src_service_name.key] }}"
+  loop_control:
+    loop_var: dst_stack_name
+  tags:
+    - clean
+#  no_log: true

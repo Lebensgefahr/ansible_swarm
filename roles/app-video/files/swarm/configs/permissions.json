@@ -1,0 +1,5 @@
+{
+  "userId": "$OPERATOR_ID",
+  "serverId": "$SERVER_ID",
+  "permissions": ["UPDATE_SERVER", "DELETE_SERVER", "UPDATE_CHANNELS", "DELETE_CHANNELS"]
+}

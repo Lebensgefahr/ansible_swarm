@@ -1,0 +1,26 @@
+images:
+  portal:
+    parser: docker-hub.domain.ru/app/parser3:4.0-rc.5-1
+    app: docker-hub.domain.ru/app/app6:feature_75842-6.0.5-1
+    app-frontend: docker-hub.domain.ru/app/app-frontend-rt:v6.14.5-1
+    app-nginx: docker-hub.domain.ru/app/app-frontend-rt:v6.14.5-1
+    app-ptz: docker-hub.domain.ru/app/app-ptz:1.0.0-master-164-1
+    app-video: docker-hub.domain.ru/app/app-video:5.4.0-dev.156-1
+    app-token: docker-hub.domain.ru/app/app-token:5.0.2-42296-SNAPSHOT-dev.145-1
+    app-api: docker-hub.domain.ru/app/app-api:6.1.0-dev.597-1
+    ks: docker-hub.domain.ru/app/ks:master-1.4.9-SNAPSHOT-1
+    app-url: docker-hub.domain.ru/app/app-url5:5.0.1-dev.38-1
+  ss:
+    ssc: docker-hub.domain.ru/ss/ssc:22.9.0
+    ssr: docker-hub.domain.ru/ss/ssr:22.9.0
+    ssrc: docker-hub.domain.ru/ss/ssrc:22.9.0
+    app-amq: docker-hub.domain.ru/app/app-amq-client:4.4.2-72099-SNAPSHOT.FEATURE-72099.1-1
+  ap:
+    ap-w: docker-hub.domain.ru/ap/ap-w:1.3.1-SNAPSHOT-1
+    ap-v: docker-hub.domain.ru/ap/ap-v:1.3.2-SNAPSHOT-2
+    flink-jobmanager: docker-hub.domain.ru/ap/ap-flink-base-1.14.3-scala_2.12:1.3.1-SNAPSHOT-2
+    flink-taskmanager: docker-hub.domain.ru/ap/ap-flink-base-1.14.3-scala_2.12:1.3.1-SNAPSHOT-2
+  recorders:
+    recorder: docker-hub.domain.ru/docker_swarm/streamer:1.13.1940-bugfix_48047
+  cdns:
+    cdn: docker-hub.domain.ru/docker_swarm/streamer:1.13.1940-bugfix_48047

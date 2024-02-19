@@ -1,0 +1,62 @@
+version: '3.9'
+
+services:
+  {{ role_name }}:
+#    image: minio/minio:RELEASE.2022-12-12T19-27-27Z
+    image: quay.io/minio/minio:latest
+    hostname: "{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}"
+    ports:
+      - "9001:9001"
+      - "9000:9000"
+    environment: &env
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: minioadmin
+      MINIO_SERVER_URL: http://{{ hostvars[groups['keepalived'][0]]['virtual_ip'] }}:9000
+      MINIO_DEFAULT_BUCKETS: 'flink:policy'
+    deploy:
+      endpoint_mode: vip
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.fstype == glusterfs
+{% if stacks[stack_name][role_name]['placement'] is defined %}
+          - node.labels.name == {{ stacks[stack_name][role_name]['placement'] }}
+{% endif %}
+    command: server /data --console-address ":9001"
+    networks: {{ stacks[stack_name][role_name]['networks'] | list }}
+    extra_hosts: {{ stacks[stack_name][role_name]['extra_hosts'] }}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+#      - minio:/data
+#TODO Investigate O_DSYNC and O_DIRECT minio support
+      - {{ domain_volumes }}/{{ stack_name }}/{{ role_name }}/data:/data
+
+  {{ role_name }}_createbuckets:
+    image: minio/mc
+    environment: *env
+    deploy:
+      restart_policy:
+        condition: on-failure
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc config host add minio http://{{ role_name }}:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD &&
+      /usr/bin/mc mb -p minio/flink &&
+      exit 0
+      "
+    networks:
+      - {{ stack_name }}_{{ role_name }}
+#      /usr/bin/mc policy download myminio/somebucketname;
+#      /usr/bin/mc rm -r --force minio/somebucketname;
+
+networks: {{ stacks[stack_name][role_name]['networks'] }}
+
+volumes:
+  minio:
+    name: 'minio'
+#    name: '{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}'

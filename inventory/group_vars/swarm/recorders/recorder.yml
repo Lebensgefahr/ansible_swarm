@@ -1,0 +1,9 @@
+MARIADB_HOST: mariadb2
+TZ: /etc/localtime
+DEBUG: 'true'
+JAVA_MEM_OPTS: -Xmx2G -Xms2G -XX:NewSize=1G
+JAVA_CUSTOM_OPTS: -Djdbc.proxy.url="jdbc:mysql://mariadb/app_proxy?autoReconnect=true&useEncoding=true&characterEncoding=UTF-8"
+                  -Djdbc.proxy.log.url="jdbc:mysql://mariadb/app_proxy_log?autoReconnect=true&useEncoding=true&characterEncoding=UTF-8"
+                  -Djdbc.app.url="jdbc:mysql://mariadb/app?autoReconnect=true&useEncoding=true&characterEncoding=UTF-8"
+STREAMER3_LOG_LEVEL: '4'
+STREAMER3_IDENT: '127.0.0.1:2032'

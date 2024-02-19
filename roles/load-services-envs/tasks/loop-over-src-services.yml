@@ -1,0 +1,32 @@
+---
+
+- block:
+    - name: "Load shared environment variables STACK: {{ src_stack_name.key }} SERVICE: {{ src_service_name.key }}"
+      ansible.builtin.include_vars:
+        file: "{{ inventory_dir }}/group_vars/swarm/{{ src_stack_name.key }}/all.yml"
+        name: envs
+    - set_fact:
+        stacks: "{{ stacks | combine({src_stack_name.key:{src_service_name.key:{'env_vars': envs }}}, recursive = True) }}"
+  rescue:
+    - set_fact:
+        stacks: "{{ stacks | combine({src_stack_name.key:{src_service_name.key:{'env_vars': {}}}}, recursive=True) }}"
+
+- block:
+    - name: "Load exclusive environment variables STACK: {{ src_stack_name.key }} SERVICE: {{ src_service_name.key }}"
+      ansible.builtin.include_vars:
+        file: "{{ inventory_dir }}/group_vars/swarm/{{ src_stack_name.key }}/{{ src_service_name.key }}.yml"
+        name: envs
+    - set_fact:
+        stacks: "{{ stacks | combine({src_stack_name.key:{src_service_name.key:{'env_vars': envs }}}, recursive=True) }}"
+  rescue:
+    - set_fact:
+        stacks: "{{ stacks | combine({src_stack_name.key:{src_service_name.key:{'env_vars': {}}}}, recursive=True) }}"
+
+- name: "Add empty extra-hosts dict SRC_STACK:{{ src_stack_name.key }} SRC_SERVICE: {{ src_service_name.key }}"
+  set_fact:
+    stacks: "{{ stacks | combine({src_stack_name.key:{src_service_name.key:{'extra_hosts': []}}}, recursive=True) }}"
+
+- name: "Add empty networks dict SRC_STACK:{{ src_stack_name.key }} SRC_SERVICE: {{ src_service_name.key }}"
+  set_fact:
+    stacks: "{{ stacks | combine({src_stack_name.key:{src_service_name.key:{'networks':{}}}}, recursive = True) }}"
+

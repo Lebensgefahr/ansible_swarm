@@ -1,0 +1,32 @@
+version: '3.9'
+
+services:
+  {{ role_name }}:
+    image: elasticsearch:7.17.0
+    hostname: "{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}"
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    deploy:
+      endpoint_mode: vip
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.fstype == glusterfs
+{% if stacks[stack_name][role_name]['placement'] is defined %}
+          - node.labels.name == {{ stacks[stack_name][role_name]['placement'] }}
+{% endif %}
+    networks: {{ stacks[stack_name][role_name]['networks'] | list }}
+    extra_hosts: {{ stacks[stack_name][role_name]['extra_hosts'] }}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - {{ domain_volumes }}/{{ stack_name }}/{{ role_name }}/data:/usr/share/elasticsearch/data
+
+networks: {{ stacks[stack_name][role_name]['networks'] }}
+
+
+#volumes:
+#  elasticsearch:
+#    name: 'elasticsearch'
+#    name: '{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}'

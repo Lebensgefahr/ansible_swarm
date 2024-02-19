@@ -1,0 +1,9 @@
+---
+- name: Add Managers to the Swarm
+  docker_swarm:
+    state: join
+    advertise_addr: "{{ ansible_host }}"
+    join_token: "{{ hostvars['localhost']['manager_token']['stdout'] }}"
+    remote_addrs: "{{ hostvars['localhost']['leader'] }}:2377"
+  tags: swarm
+

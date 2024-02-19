@@ -1,0 +1,70 @@
+version: '3.9'
+
+services:
+  {{ role_name }}:
+    image: {{ images[stack_name][role_name] }}
+    hostname: "{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}"
+    environment:
+      DEBUG: 'true'
+      JAVA_CUSTOM_OPTS: -Dspring.datasource.url=jdbc:mysql://mariadb/app_video?useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Europe/Moscow&characterEncoding=utf8
+    ports:
+      - "82:8080"
+    deploy:
+      mode: replicated
+      replicas: {{ stacks[stack_name][role_name]['replicas'] | default (1) }}
+      endpoint_mode: vip
+      restart_policy:
+        condition: on-failure
+{% if stacks[stack_name][role_name]['placement'] is defined %}
+      placement:
+        constraints: [node.labels.name == {{ stacks[stack_name][role_name]['placement'] }}]
+{% endif %}
+      update_config:
+        parallelism: 1
+        delay: 2s
+        order: start-first
+        failure_action: rollback
+        monitor: 20s
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+    networks: {{ stacks[stack_name][role_name]['networks'] | list }}
+    extra_hosts: {{ stacks[stack_name][role_name]['extra_hosts'] }}
+    volumes:
+      - /etc/localtime:/etc/localtime
+
+  {{ role_name }}_provisioner:
+    image: docker-hub.domain.ru/docker_swarm/alpine_common:1
+    hostname: "{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}"
+    environment:
+      STREAMER_ADDRESSES: {% for host in groups['recorders'] %}{{ host }} {% endfor %}
+
+    deploy:
+      restart_policy:
+        condition: on-failure
+    configs:
+      - source: streamer-prov.sh
+        target: /tmp/streamer-prov.sh
+        mode: 0555
+      - source: permissions.json
+        target: /tmp/permissions.json
+        mode: 0444
+      - source: server.json
+        target: /tmp/server.json
+        mode: 0444
+    command: '/tmp/streamer-prov.sh'
+    networks:
+      - {{ stack_name }}_{{ role_name }}
+
+configs:
+  streamer-prov.sh:
+    name: {{ config_files['streamer-prov.sh']['name'] }}
+    external: true
+  permissions.json:
+    name: {{ config_files['permissions.json']['name'] }}
+    external: true
+  server.json:
+    name: {{ config_files['server.json']['name'] }}
+    external: true
+
+networks: {{ stacks[stack_name][role_name]['networks'] }}

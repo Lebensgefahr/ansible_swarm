@@ -1,0 +1,61 @@
+version: '3.9'
+
+services:
+  {{ role_name }}:
+    image: {{ images[stack_name][role_name] }}
+    hostname: "{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}"
+    environment: {{ stacks[stack_name][role_name]['env_vars'] | to_json }}
+    ports:
+      - "80:8080"
+    deploy:
+      mode: replicated
+      replicas: {{ stack[stack_name][role_name]['replicas'] | default (1) }}
+      endpoint_mode: vip
+      restart_policy:
+        condition: on-failure
+{% if stacks[stack_name][role_name]['placement'] is defined %}
+      placement:
+        constraints: [node.labels.name == {{ stacks[stack_name][role_name]['placement'] }}]
+{% endif %}
+      update_config:
+        parallelism: 1
+        delay: 2s
+        order: start-first
+        failure_action: rollback
+        monitor: 20s
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+    configs:
+      - source: settings.json
+        target: /portal-app/assets/settings.json
+      - source: auth.settings.json
+        target: /portal-app/assets/auth.settings.json
+      - source: nginx.conf
+        target: /etc/nginx/nginx.conf
+      - source: vehicles1.csv
+        target: /portal-app/vehicles1.csv
+    networks: {{ stacks[stack_name][role_name]['networks'] | list }}
+    extra_hosts: {{ stacks[stack_name][role_name]['extra_hosts'] }}
+    volumes:
+      - /etc/localtime:/etc/localtime
+
+configs:
+  settings.json:
+    name: {{ config_files['settings.json']['name'] }}
+    external: true
+  auth.settings.json:
+    name: {{ config_files['auth.settings.json']['name'] }}
+    external: true
+  nginx.conf:
+    name: {{ config_files['nginx.conf']['name'] }}
+    external: true
+  vehicles1.csv:
+    name: {{ config_files['vehicles1.csv']['name'] }}
+    external: true
+
+networks: {{ stacks[stack_name][role_name]['networks'] }}
+
+#volumes:
+#  config:
+#    name: 'test'

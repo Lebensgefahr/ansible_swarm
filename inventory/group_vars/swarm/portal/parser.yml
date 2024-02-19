@@ -1,0 +1,18 @@
+TZ: /etc/localtime
+DEBUG: 'true'
+JMXEXPORTER: 'true'
+JAVA_MEM_OPTS: -Xmx2G -Xms2G -XX:NewSize=1G
+JAVA_DEBUG_OPTS: -agentlib:jdwp=transport=dt_socket,address=5000,server=y,suspend=n
+JAVA_CUSTOM_OPTS: -Dcustom.properties=/dev/null -Ddb.user.group.table.name=user_group
+        -Dmigrate.apply=true -Dmigrate.debug=true -Dmessengers.enabled=true -Dapp.server=http://app:8080/
+        -Drabbitmq.port=61613 -Dwatchdog.events.depth.min=4320 -Dsecurity.user.camera.access.cache.enabled=true
+        -Dsecurity.user.camera.access.cache.ttl.sec=600 -Dsecurity.user.camera.access.cache.size=4Mb
+        -Dgrails.env=production
+        -Djdbc.url.mw="jdbc:mysql://mariadb/app?autoReconnect=true&useEncoding=true&characterEncoding=UTF-8"
+        -Djdbc.url.parser="jdbc:mysql://mariadb/parser?autoReconnect=true&useEncoding=true&characterEncoding=UTF-8"
+        -Djdbc.url.parser.history="jdbc:mysql://mariadb/parser_history?autoReconnect=true&useEncoding=true&characterEncoding=UTF-8"
+        -Djdbc.url.parser.dictionary="jdbc:mysql://mariadb/parser_dictionary?autoReconnect=true&useEncoding=true&characterEncoding=UTF-8"
+        -Drabbitmq.username=app
+        -Drabbitmq.password=sqlsql
+        -Dsmtp.server="smtp://mail.72to.info:25?[sender]=mailroot%40mail.primorye.ru&[subject]=%D0%92%D1%8B%20%D0%BF%D0%BE%D0%B4%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D1%8B%20%D0%BD%D0%B0%20%D0%BB%D0%B8%D1%81%D1%82%20%D0%BC%D0%BE%D0%BD%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%BD%D0%B3%D0%B0%20%24%7Brule.name%7D"
+        -Dwatchdog.events.websocket.destination=/queue/parser.watchdog.user.events

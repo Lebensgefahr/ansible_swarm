@@ -1,0 +1,8 @@
+---
+
+- name: Deploy services
+  include_tasks: nested-deploy.yml
+  with_items: "{{ stacks | list }}"
+  loop_control:
+    loop_var: stack_name
+

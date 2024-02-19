@@ -1,0 +1,37 @@
+version: '3.9'
+
+services:
+  {{ role_name }}:
+    image: grafana/grafana:9.2.4
+    hostname: "{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}"
+    ports:
+      - "3030:3000"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - {{ domain_volumes }}/{{ stack_name }}/{{ role_name }}/data:/var/lib/grafana
+      - {{ domain_volumes }}/{{ stack_name }}/{{ role_name }}/provisioning:/etc/grafana/provisioning
+    environment:
+#      - GF_SERVER_ROOT_URL=http://172.16.0.99
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+#      - GF_INSTALL_PLUGINS=grafana-piechart-panel
+#      - PROMETHEUS_ENDPOINT=http://prometheus:9090
+    networks: {{ stacks[stack_name][role_name]['networks'] | list }}
+    extra_hosts: {{ stacks[stack_name][role_name]['extra_hosts'] }}
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.fstype == glusterfs
+{% if stacks[stack_name][role_name]['placement'] is defined %}
+          - node.labels.name == {{ stacks[stack_name][role_name]['placement'] }}
+{% endif %}
+      resources:
+        limits:
+          memory: 384M
+
+networks: {{ stacks[stack_name][role_name]['networks'] }}
+
+#volumes:
+#  grafana_data:

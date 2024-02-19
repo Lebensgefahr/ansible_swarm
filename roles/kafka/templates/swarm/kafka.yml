@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  {{ role_name }}:
+    image: docker.io/bitnami/kafka:2
+    hostname: "{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}"
+    ports:
+      - "9092:9092"
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+#      - KAFKA_INTER_BROKER_LISTENER_NAME=CLIENT
+    deploy:
+      endpoint_mode: vip
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.fstype == glusterfs
+{% if stacks[stack_name][role_name]['placement'] is defined %}
+          - node.labels.name == {{ stacks[stack_name][role_name]['placement'] }}
+{% endif %}
+    networks: {{ stacks[stack_name][role_name]['networks'] | list }}
+    extra_hosts: {{ stacks[stack_name][role_name]['extra_hosts'] }}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - {{ domain_volumes }}/{{ stack_name }}/{{ role_name }}/data:/bitnami
+
+networks: {{ stacks[stack_name][role_name]['networks'] }}
+
+#volumes:
+#  kafka:
+#    name: 'kafka'
+#    name: '{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}'

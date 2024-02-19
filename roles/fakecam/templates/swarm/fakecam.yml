@@ -1,0 +1,44 @@
+version: '3.9'
+
+services:
+  {{ role_name }}:
+#    image: nginx:alpine
+    image: docker-hub.domain.ru/docker_swarm/fakecam:1
+    hostname: "{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}"
+    environment: {{ stacks[stack_name][role_name]['env_vars'] | to_json }}
+#    ports:
+#      - "5554:554"
+    deploy:
+      mode: global
+      placement:
+        constraints: [node.labels.role == cdn]
+      restart_policy:
+        condition: on-failure
+      update_config:
+        parallelism: 1
+        delay: 2s
+        order: start-first
+        failure_action: rollback
+        monitor: 20s
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+#    command: '/bin/bash -c "apt-get update && apt-get -y install telnet iputils-ping iperf && sleep 100000"'
+#    configs:
+#      - source: streamer.config
+#        target: /opt/domain/streamer/etc/etc.d/streamer.config
+#      - source: license.config
+#        target: /opt/domain/streamer/etc/etc.d/license.config
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - host
+
+networks:
+  host:
+    name: host
+    external: true
+
+#volumes:
+#  config:
+#    name: 'test'

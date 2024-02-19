@@ -1,0 +1,38 @@
+---
+
+- name: Unstall {{ role_name }} packages
+  ansible.builtin.apt:
+    name: "{{ package_names }}"
+    state: absent
+    purge: yes
+  become: yes
+  tags:
+    - never
+    - clean
+
+- name: Remove dependencies that are no longer required
+  ansible.builtin.apt:
+    autoremove: yes
+  become: yes
+  tags:
+    - never
+    - clean
+
+- name: Set sysctl option net.ipv4.ip_nonlocal_bind = 0
+  sysctl:
+    name: net.ipv4.ip_nonlocal_bind
+    value: '0'
+    reload: yes
+  become: yes
+  tags:
+    - never
+    - clean
+
+- name: Remove {{ role_name }} directory
+  ansible.builtin.file:
+    path: '/etc/keepalived'
+    state: absent
+  become: yes
+  tags:
+    - clean
+    - never

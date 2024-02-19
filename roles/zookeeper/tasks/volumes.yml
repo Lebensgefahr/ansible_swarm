@@ -1,0 +1,7 @@
+- name: "Set volume owner and group STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+  file:
+    dest: "{{ domain_volumes }}/{{stack_name}}/{{ role_name }}"
+    owner: '1001'
+    group: '0'
+    recurse: yes
+  become: yes

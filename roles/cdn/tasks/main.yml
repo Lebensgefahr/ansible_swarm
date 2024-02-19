@@ -1,0 +1,35 @@
+---
+
+- name: Remove {{ role_name }} directories
+  file:
+    path: "{{ directory }}"
+    state: absent
+  with_items:
+    - "{{ domain_opt }}/{{ role_name }}"
+  loop_control:
+    loop_var: directory
+  become: yes
+  tags:
+    - never
+    - clean
+
+#- name: Create {{ role_name }} directories
+#  file:
+#    path: "{{ directory }}"
+#    state: directory
+#  with_items:
+#    - "{{ domain_opt }}/{{ role_name }}/etc.d"
+#  loop_control:
+#    loop_var: directory
+#  become: yes
+
+- name: Templating {{ role_name }} configs
+  template:
+    src: "{{ file }}"
+    dest: "{{ domain_opt }}/{{ role_name }}/etc.d/"
+  with_fileglob:
+    - ../templates/configs/*
+  loop_control:
+    loop_var: file
+  become: yes
+

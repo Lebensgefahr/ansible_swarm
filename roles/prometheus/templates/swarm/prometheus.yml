@@ -1,0 +1,49 @@
+version: '3.9'
+
+services:
+  {{ role_name }}:
+    image: prom/prometheus:v2.40.1
+    hostname: "{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}"
+    ports:
+      - "9090:9090"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+#      - prometheus_config:/etc/prometheus
+      - {{ domain_volumes }}/{{ stack_name }}/{{ role_name }}/data:/prometheus
+    configs:
+      - source: prometheus.yml
+        target: /etc/prometheus/prometheus.yml
+      - source: alert.rules
+        target: /etc/prometheus/alert.rules
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.external-url=http://{{ hostvars[groups['keepalived'][0]]['virtual_ip'] }}:9090'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+    networks: {{ stacks[stack_name][role_name]['networks'] | list }}
+    extra_hosts: {{ stacks[stack_name][role_name]['extra_hosts'] }}
+    deploy:
+      placement:
+        constraints:
+          - node.labels.fstype == glusterfs
+{% if stacks[stack_name][role_name]['placement'] is defined %}
+          - node.labels.name == {{ stacks[stack_name][role_name]['placement'] }}
+{% endif %}
+      resources:
+        limits:
+          memory: 500M
+
+networks: {{ stacks[stack_name][role_name]['networks'] }}
+
+configs:
+  prometheus.yml:
+    name: {{ config_files['prometheus.yml']['name'] }}
+    external: true
+  alert.rules:
+    name: {{ config_files['alert.rules']['name'] }}
+    external: true
+
+#volumes:
+#  prometheus_config:
+#  prometheus_data:

@@ -1,0 +1,26 @@
+- name: Remove streamer storage directory
+  file:
+    path: "{{ directory }}"
+    state: directory
+  with_items:
+    - "{{ domain_streamer_storage }}/dump"
+    - "{{ domain_streamer_storage }}/dumpinfo"
+    - "{{ domain_streamer_storage }}/rec"
+  loop_control:
+    loop_var: directory
+  become: yes
+  tags:
+    - never
+    - clean
+
+- name: Create streamer storage directory
+  file:
+    path: "{{ directory }}"
+    state: directory
+  with_items:
+    - "{{ domain_streamer_storage }}/dump"
+    - "{{ domain_streamer_storage }}/dumpinfo"
+    - "{{ domain_streamer_storage }}/rec"
+  loop_control:
+    loop_var: directory
+  become: yes

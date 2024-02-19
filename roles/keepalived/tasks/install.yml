@@ -1,0 +1,44 @@
+---
+
+- name: Install {{ role_name }} packages
+  ansible.builtin.apt:
+    name: "{{ package_names }}"
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Set sysctl option net.ipv4.ip_nonlocal_bind = 1
+  sysctl:
+    name: net.ipv4.ip_nonlocal_bind
+    value: '1'
+    reload: yes
+  become: yes
+
+- name: Find interfaces name to use for {{ role_name }}
+  set_fact:
+    desired_interface_name="{{ item }}"
+  when:
+    - hostvars[inventory_hostname]['ansible_' + item ]['ipv4']['address'] == inventory_hostname
+  with_items:
+    - "{{ ansible_interfaces }}"
+  tags:
+    - interface
+
+- name: Configure {{ role_name }}
+  ansible.builtin.template:
+    src: keepalived.conf
+    dest: /etc/keepalived/
+    mode: "0640"
+  become: yes
+  tags:
+    - interface
+
+- name: Enable and start {{ role_name }}
+  ansible.builtin.systemd:
+    name: keepalived
+    enabled: yes
+    state: restarted
+    daemon_reload: yes
+  become: yes
+  tags:
+    - interface

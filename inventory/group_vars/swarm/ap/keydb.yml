@@ -1,0 +1,3 @@
+LOG_LEVEL: debug
+IMAGE: someimage2
+MARIADB_HOST: mariadb2

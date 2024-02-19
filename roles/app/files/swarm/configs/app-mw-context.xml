@@ -1,0 +1,28 @@
+<Context>
+    <WatchedResource>WEB-INF/web.xml</WatchedResource>
+    <Resource
+          auth="Container"
+          description="DB Connection"
+          driverClass="com.mysql.jdbc.Driver"
+          maxPoolSize="500"
+          minPoolSize="10"
+          acquireIncrement="50"
+          maxIdleTime="120"
+          preferredTestQuery ="select 1"
+          testConnectionOnCheckout = "true"
+          name="jdbc/app-mw-DataSource"
+          user="app"
+          password="sqlsql"
+          factory="org.apache.naming.factory.BeanFactory"
+          type="com.mchange.v2.c3p0.ComboPooledDataSource"
+          jdbcUrl="${jdbc.url}"
+        />
+    <Manager
+          className="org.redisson.tomcat.RedissonSessionManager"
+          configPath="${catalina.base}/conf/redisson.conf"
+          readMode="REDIS"
+          updateMode="DEFAULT"
+          broadcastSessionEvents="false"
+          keyPrefix="app-session"
+        />
+</Context>

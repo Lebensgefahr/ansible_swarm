@@ -1,0 +1,79 @@
+version: '3.9'
+
+services:
+  {{ role_name }}:
+    image: {{ images[stack_name][role_name] }}
+    hostname: "{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}"
+    environment:
+      DEBUG: 'true'
+      JAVA_MEM_OPTS: -Xmx4G -Xms4G -XX:NewSize=1G
+      TZ: /etc/localtime
+      JAVA_CUSTOM_OPTS: -Dapp.customer=domain -Dconfig.location=/usr/local/tomcat/conf/custom.properties
+        -Djdbc.url="jdbc:mysql://mariadb/app?autoReconnect=true&allowMultiQueries=true&characterEncoding=UTF-8&useUnicode=yes"
+        -Dapp.i18n.dir=/i18n
+        -Dapp.mode=player
+        -Drabbitmq.enabled=true
+        -Drabbitmq.ssToMwQueue=ss-mw
+        -Drabbitmq.ssToMwExchange=ss-mw.topic
+        -Drabbitmq.connections.host=rabbitmq
+#    ports:
+#      - "8080:8080"
+    deploy:
+      mode: replicated
+      replicas: {{ stacks[stack_name][role_name]['replicas'] | default (1) }}
+      endpoint_mode: vip
+      restart_policy:
+        condition: on-failure
+{% if stacks[stack_name][role_name]['placement'] is defined %}
+      placement:
+        constraints: [node.labels.name == {{ stacks[stack_name][role_name]['placement'] }}]
+{% endif %}
+      update_config:
+        parallelism: 1
+        delay: 2s
+        order: start-first
+        failure_action: rollback
+        monitor: 20s
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+    configs:
+      - source: app-mw-config.yml
+        target: /usr/local/tomcat/conf/app-mw-config.yml
+      - source: app-mw-custom.properties
+        target: /usr/local/tomcat/conf/custom.properties
+      - source: app-mw-messages.properties
+        target: /i18n/messages.properties
+      - source: app-mw-context.xml
+        target: /usr/local/tomcat/conf/context.xml
+      - source: app-mw-redisson.conf
+        target: /usr/local/tomcat/conf/redisson.conf
+    networks: {{ stacks[stack_name][role_name]['networks'] | list }}
+    extra_hosts: {{ stacks[stack_name][role_name]['extra_hosts'] }}
+    volumes:
+      - /etc/localtime:/etc/localtime
+
+
+configs:
+  app-mw-config.yml:
+    name: {{ config_files['app-mw-config.yml']['name'] }}
+    external: true
+  app-mw-context.xml:
+    name: {{ config_files['app-mw-context.xml']['name'] }}
+    external: true
+  app-mw-custom.properties:
+    name: {{ config_files['app-mw-custom.properties']['name'] }}
+    external: true
+  app-mw-messages.properties:
+    name: {{ config_files['app-mw-messages.properties']['name'] }}
+    external: true
+  app-mw-redisson.conf:
+    name: {{ config_files['app-mw-redisson.conf']['name'] }}
+    external: true
+
+networks: {{ stacks[stack_name][role_name]['networks'] }}
+
+
+#volumes:
+#  config:
+#    name: 'test'

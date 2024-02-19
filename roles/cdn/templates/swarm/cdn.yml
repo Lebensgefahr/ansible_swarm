@@ -1,0 +1,54 @@
+version: '3.9'
+
+services:
+  {{ role_name }}:
+#    image: nginx:alpine
+#    image: ubuntu
+    image: {{ images[stack_name][role_name] }}
+    hostname: "{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}"
+    environment: {{ stacks[stack_name][role_name]['env_vars'] | to_json }}
+#    ports:
+#      - "2032:80"
+    deploy:
+      mode: global
+      placement:
+        constraints: [node.labels.role == cdn]
+      restart_policy:
+        condition: on-failure
+      update_config:
+        parallelism: 1
+        delay: 2s
+        order: start-first
+        failure_action: rollback
+        monitor: 20s
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+#    command: '/bin/bash -c "apt-get update && apt-get -y install telnet iputils-ping iperf && sleep 100000"'
+#    configs:
+#      - source: streamer.config
+#        target: /opt/domain/streamer/etc/etc.d/streamer.config
+#      - source: license.config
+#        target: /opt/domain/streamer/etc/etc.d/license.config
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - {{ domain_opt }}/{{ role_name }}/etc.d:/opt/domain/streamer/etc/etc.d
+    healthcheck:
+      test: ["CMD-SHELL","curl -fs -o /dev/null http://localhost:2222/status"]
+      interval: 30s
+      timeout: 5s
+      retries: 4
+    networks:
+      - host
+    extra_hosts:
+      - rabbitmq:{{ hostvars[groups['keepalived'][0]]['virtual_ip'] }}
+      - app-token:{{ hostvars[groups['keepalived'][0]]['virtual_ip'] }}
+
+networks:
+  host:
+    name: host
+    external: true
+
+#volumes:
+#  config:
+#    name: 'test'

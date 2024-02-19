@@ -1,0 +1,50 @@
+---
+
+- name: "Remove configs STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+  community.docker.docker_config:
+    name: "{{ stack_name+'_'+role_name+'_'+file | basename }}"
+    state: absent
+  with_fileglob:
+    - swarm/configs/*
+    - ../templates/swarm/configs/*
+  loop_control:
+    loop_var: file
+  when:
+    - stacks[stack_name][role_name]['enabled']
+  tags:
+    - never
+    - clean
+
+- name: "Remove rotated configs STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+  community.docker.docker_config:
+    name: "{{ 'new-'+stack_name+'_'+role_name+'_'+file | basename }}"
+    state: absent
+  with_fileglob:
+    - swarm/configs/*
+    - ../templates/swarm/configs/*
+  loop_control:
+    loop_var: file
+  when:
+    - stacks[stack_name][role_name]['enabled']
+  tags:
+    - never
+    - clean
+
+- name: "Remove config dir STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+  file:
+    path: "{{ domain_home }}/{{ stack_name }}/{{ role_name }}"
+    state: absent
+  when:
+    - stacks[stack_name][role_name]['enabled']
+
+- name: "Remove volume dir STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+  file:
+    path: "{{ domain_volumes }}/{{ stack_name }}/{{ role_name }}"
+    state: absent
+  when:
+    - stacks[stack_name][role_name]['enabled']
+  become: yes
+  tags:
+    - never
+    - clean
+

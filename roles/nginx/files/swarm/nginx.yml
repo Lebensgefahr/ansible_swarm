@@ -1,0 +1,53 @@
+version: '3.9'
+
+services:
+  nginx:
+#    image: 127.0.0.1:5000/test:4
+    image: nginx:alpine
+    hostname: "{{.Service.Name}}_{{.Task.Slot}}"
+    environment:
+      HEADER: "THIS IS THE FIRST HEADER 11"
+#      VAR1: ${VAR1}
+#    ports:
+#      - "8080:80"
+    deploy:
+      mode: replicated
+      replicas: &replicas 5
+      endpoint_mode: vip
+      update_config:
+        parallelism: 1
+        delay: 2s
+        order: start-first
+        failure_action: rollback
+        monitor: 20s
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+    configs:
+      - source: index.html
+        target: /usr/share/nginx/html/index.html
+    volumes:
+      - /etc/localtime:/etc/localtime
+#    networks:
+#      - nginx_default
+  nginx_provisioner:
+    image: nginx:alpine
+    hostname: "{{.Service.Name}}"
+    environment:
+      REPLICAS: *replicas
+#    networks:
+#      - nginx_default
+#    volumes:
+#      - config:/test/
+
+configs:
+  index.html:
+    name: index.html
+    external: true
+
+#networks:
+#  nginx_default:
+#    external: true
+volumes:
+  config:
+    name: 'test'

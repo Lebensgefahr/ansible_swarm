@@ -1,0 +1,22 @@
+version: '3.9'
+
+services:
+  {{ role_name }}:
+    image: ubuntu
+    hostname: "{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}"
+    environment: {{ stacks[stack_name][role_name]['env_vars'] | to_json }}
+    deploy:
+{% if stacks[stack_name][role_name]['placement'] is defined %}
+      placement:
+        constraints:
+          - node.labels.name == {{ stacks[stack_name][role_name]['placement'] }}
+{% endif %}
+    networks: {{ stacks[stack_name][role_name]['networks'] | list }}
+    extra_hosts: {{ stacks[stack_name][role_name]['extra_hosts'] }}
+    command: '/bin/bash -c "apt-get update && apt-get -y install tcpdump iproute2 telnet iputils-ping iperf && sleep 100000"'
+
+networks: {{ stacks[stack_name][role_name]['networks'] }}
+
+#volumes:
+#  config:
+#    name: 'test'

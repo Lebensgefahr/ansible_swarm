@@ -1,0 +1,95 @@
+---
+- name: set timezone to Europe/Moscow
+  timezone:
+    name: Europe/Moscow
+  become: yes
+
+- name: Change default history size in skeleton.
+  ansible.builtin.replace:
+    path: /etc/skel/.bashrc
+    regexp: '^HISTSIZE=.*$'
+    replace: 'HISTSIZE=10000000'
+  become: yes
+
+- name: Change default history size in skeleton.
+  ansible.builtin.replace:
+    path: /etc/skel/.bashrc
+    regexp: '^HISTFILESIZE=.*$'
+    replace: 'HISTFILESIZE=20000000'
+  become: yes
+
+- name: add inputrc
+  ansible.builtin.blockinfile:
+    create: false
+    path: /etc/inputrc
+    block: |
+      "\C-p": history-search-backward
+      "\C-n": history-search-forward
+  become: yes
+
+- name: Update and upgrade apt packages
+  apt:
+    upgrade: 'yes'
+    update_cache: yes
+  become: yes
+
+#- name: Run apt-get update
+#  ansible.builtin.apt:
+#    update_cache: yes
+ # become: yes
+
+- name: Install useful packages
+  ansible.builtin.apt: 
+    pkg:
+      - mc
+      - htop
+      - iftop
+      - iotop
+      - iperf
+      - bash-completion
+      - jq
+      - sysstat
+      - nload
+      - psmisc
+      - tree
+      - ntp
+      - rsync
+      - net-tools
+    state: present
+  become: yes
+
+- name: Uninstall useful packages
+  ansible.builtin.apt: 
+    pkg:
+      - mc
+      - htop
+      - iftop
+      - iotop
+      - iperf
+      - bash-completion
+      - jq
+      - sysstat
+      - nload
+      - psmisc
+      - tree
+      - ntp
+      - rsync
+      - net-tools
+    state: absent
+    purge: yes
+  become: yes
+  tags:
+    - never
+    - clean
+
+- name: Remove dependencies that are no longer required
+  ansible.builtin.apt:
+    autoremove: yes
+  become: yes
+  tags:
+    - clean
+    - never
+
+#  environment: "{{ proxy_env }}"
+
+

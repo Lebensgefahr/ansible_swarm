@@ -1,0 +1,55 @@
+---
+
+- set_fact:
+    network_connections: {}
+    enabled_targets: []
+
+- debug:
+    msg: "{{item}}"
+  with_items: "{{connections.values()|list}}"
+
+- name: Fill array with enabled services
+  set_fact:
+    enabled_targets: "{{ enabled_targets + [item]}}"
+  with_items: "{{connections.values()|list}}"
+  when:
+    - item != None
+    - services[item]['enabled']
+
+- name: Show array with enabled target services
+  debug: 
+    msg: "{{ enabled_targets |unique }}"
+
+- name: Show services should be added to network_connections list
+  debug:
+    msg: "{{ connections[item] }} {{connections[item]|length}}"
+  when: connections[item] != None
+  with_items: "{{ connections }}"
+
+- name: Create dict with enabled services only
+  set_fact:
+    network_connections: "{{ network_connections |combine({item:connections[item]|intersect(enabled_targets)}) }}"
+  when:
+    - connections[item] != None
+    - services[item]['enabled']
+  with_items: "{{ connections }}"
+
+- name: Show list of enabled service networks
+  debug:
+    msg: "{{ network_connections }}"
+
+#- fail:
+#- debug:
+#    msg: "{{ item }}"
+#  with_items: "{{ connections }}"
+
+#  when: network_connections['mariadb'] is defined
+
+
+#- debug:
+#    msg: "{{ network_connections['mariadb'] | length}}"
+#  when: network_connections['mariadb'] is defined
+
+
+
+#- fail:

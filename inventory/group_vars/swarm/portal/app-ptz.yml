@@ -1,0 +1,6 @@
+CCTV_PASSWORD: sqlsql
+LOG_LEVEL: debug
+IMAGE: someimage
+DEBUG: 'true'
+JAVA_CUSTOM_OPTS: -Dptz.db.jdbcUrl=jdbc:mysql://mariadb/app_ptz
+                  -Dptz.concurrent.notification.enabled=true

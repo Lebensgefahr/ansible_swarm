@@ -1,0 +1,49 @@
+---
+
+- name: Set node labels
+  community.docker.docker_node:
+    hostname: "{{ hostvars[item]['ansible_facts']['hostname'] }}"
+    labels:
+      name: "node{{ groups['docker_swarm'].index(item)+1 }}"
+    labels_state: merge
+  with_items: "{{groups['docker_swarm']}}"
+  tags:
+    - labels
+
+- name: Set recorder labels
+  debug:
+    msg: "{{ hostvars[item]['ansible_facts']['default_ipv4']['address'] }}"
+  with_items: "{{groups['recorders']}}"
+  tags:
+    - labels
+
+- name: Set recorder labels
+  community.docker.docker_node:
+    hostname: "{{ hostvars[item]['ansible_facts']['hostname'] }}"
+    labels:
+      role: "recorder"
+    labels_state: merge
+  with_items: "{{groups['recorders']}}"
+  tags:
+    - labels
+
+- name: Set recorder labels
+  community.docker.docker_node:
+    hostname: "{{ hostvars[item]['ansible_facts']['hostname'] }}"
+    labels:
+      role: "cdn"
+    labels_state: merge
+  with_items: "{{groups['cdns']}}"
+  tags:
+    - labels
+
+- name: Set glusterfs labels
+  community.docker.docker_node:
+    hostname: "{{ hostvars[item]['ansible_facts']['hostname'] }}"
+    labels:
+      fstype: "glusterfs"
+    labels_state: merge
+  with_items: "{{groups['glusterfs']}}"
+  tags:
+    - labels
+

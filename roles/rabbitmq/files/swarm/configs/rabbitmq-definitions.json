@@ -1,0 +1,1122 @@
+{
+  "rabbit_version": "3.7.28",
+  "users": [
+    {
+      "name": "token",
+      "password_hash": "HQU5knXJBMnXWJBu31HFv0BBp3JrPu0c5AgDOmAgn5xy/wbN",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": ""
+    },
+    {
+      "name": "ssc",
+      "password_hash": "YrCKSSDDMogGkS8meUrOjdMYeAD+tF9kPFL2/1LUZNqznB8U",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": ""
+    },
+    {
+      "name": "nv",
+      "password_hash": "3XOiPisylBXViEfAxggixskVOdQqWtiM9tIkT0ljXV2i5+mg",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": ""
+    },
+    {
+      "name": "vl",
+      "password_hash": "Ze/flHwm6zzWcCP5PSuzPfoE8NAkCVk35DSRhI18tA4PbUsY",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": ""
+    },
+    {
+      "name": "duplo",
+      "password_hash": "JN1pxuQpuAVv+/NleaAk2vii95MNUOoSAl48fIGuOZ4a70mw",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": ""
+    },
+    {
+      "name": "ks",
+      "password_hash": "CEaWzFzS3v5Oa/cLhuRot6qW+1h0U813etwebfDKQe0mis4d",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": ""
+    },
+    {
+      "name": "ntl",
+      "password_hash": "IAZ6/vxQSxwHPqFPGUUVmQo8xp/q5AJCNJiBKog80cYcAyxz",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": ""
+    },
+    {
+      "name": "netvision",
+      "password_hash": "DcO8Cf6XayNekgDJLVoAwtx/LmQVwXGa4pLt40Y16zZdhik7",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": ""
+    },
+    {
+      "name": "cdn",
+      "password_hash": "dLo+WczPFRFTAnZSyhw0MzKdZGwoTyQ8LeDgvH/j+SZCVf/1",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": ""
+    },
+    {
+      "name": "streamer",
+      "password_hash": "ii/e9pqin+5fOUynLyD33r19Fv4p6tiKcxsZiZawS0OhflXz",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "administrator"
+    },
+    {
+      "name": "guest",
+      "password_hash": "SZNEgylyfYAe0Wllc1IWvZZ92Q2GKd6bpvyzoWvSLeQFESib",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "administrator"
+    },
+    {
+      "name": "ap",
+      "password_hash": "Unyi4kstTcXz0mDEsqC5M0akuhUsJfpEg9ULXKTOQja17WOQ",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": ""
+    },
+    {
+      "name": "amq_client",
+      "password_hash": "Sac4XLXrYznz/n4QieFvGM+vU43K2cpw9+JwPSN0iQ2RJtPd",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": ""
+    },
+    {
+      "name": "app",
+      "password_hash": "OrDUubXbqvKdHufqFZwPbv6jq7zStwSuubVMUamVDQyfOb7v",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": ""
+    },
+    {
+      "name": "analyt",
+      "password_hash": "USO2U1M5QxuRTd8wlyq5faV8nOXaG1cuFSKqPI43fuuu7OPV",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": ""
+    },
+    {
+      "name": "recorder",
+      "password_hash": "wa6av7rvIHyAaPWgTjjDkveikRwU+TeGBWOXIPTGkBmYo73v",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": ""
+    }
+  ],
+  "vhosts": [
+    {
+      "name": "/"
+    },
+    {
+      "name": "messengers"
+    }
+  ],
+  "permissions": [
+    {
+      "user": "cdn",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "ap",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "guest",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "ntl",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "guest",
+      "vhost": "messengers",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "app",
+      "vhost": "messengers",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "ssc",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "nv",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "app",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "amq_client",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "ap",
+      "vhost": "messengers",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "vl",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "recorder",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "netvision",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "analyt",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "streamer",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "token",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "ks",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "duplo",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "topic_permissions": [
+    {
+      "user": "app",
+      "vhost": "/",
+      "exchange": "",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "ap",
+      "vhost": "/",
+      "exchange": "ap.vas.state",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "ap",
+      "vhost": "/",
+      "exchange": "ap.mon.events",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "ap",
+      "vhost": "/",
+      "exchange": "ap.mon.vsm.events",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "ap",
+      "vhost": "/",
+      "exchange": "ap.vas.task.state",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "ap",
+      "vhost": "messengers",
+      "exchange": "",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "app",
+      "vhost": "/",
+      "exchange": "app.watchdog.events.topic",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "ap",
+      "vhost": "/",
+      "exchange": "ap.mon.rules",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "ap",
+      "vhost": "/",
+      "exchange": "ap.metadata",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "ap",
+      "vhost": "/",
+      "exchange": "",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "parameters": [],
+  "global_parameters": [
+    {
+      "name": "cluster_name",
+      "value": "rabbit@rabbitmq"
+    },
+    {
+      "name": "internal_cluster_id",
+      "value": "rabbitmq-cluster-id-Ro3ec4m84yuKguKC51rNhA"
+    }
+  ],
+  "policies": [],
+  "queues": [
+    {
+      "name": "monitoring.audioAnalyticServiceEvents.amq-client",
+      "vhost": "/",
+      "durable": false,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "itv.watchdog.events",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "monitoring.statServerEvents.amq-client",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "monitoring.analytics.amq-client",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "ap.grz.to-sink-2",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-message-ttl": 600000,
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "audio-analytic-service.dlx.queue",
+      "vhost": "/",
+      "durable": false,
+      "auto_delete": false,
+      "arguments": {
+        "x-dead-letter-exchange": "audio-analytic-service.topic",
+        "x-message-ttl": 5000
+      }
+    },
+    {
+      "name": "vl.watchdog.events",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-message-ttl": 600000
+      }
+    },
+    {
+      "name": "ap.grz.to-sink",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-message-ttl": 600000,
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "stat-server.dlx.queue",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-dead-letter-exchange": "stat-server.topic",
+        "x-message-ttl": 3630000
+      }
+    },
+    {
+      "name": "ap.analyt",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-message-ttl": 600000,
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "monitoring.snapshot.amq-client",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "ntl.allevents",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-message-ttl": 600000,
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "ap.vas.task.state.queue.ap-w:8080",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-expires": 86400000,
+        "x-message-ttl": 3600000
+      }
+    },
+    {
+      "name": "ap.mda.metadata",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "ap.mon.rules",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "ntl.watchdog.events.history",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-message-ttl": 600000,
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "ap.mon.events",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "watchdog.events",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "ap.mon.metadata",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "ap.vas.state.queue.ap-w:8080",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-expires": 86400000,
+        "x-message-ttl": 3600000
+      }
+    },
+    {
+      "name": "monitoring.channelstatus.amq-client",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "ap.mon.events_to_see",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "ap.mon.vsm.events",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "ap.mon.events.history",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "ap.mon.events": "",
+        "x-max-length": 100
+      }
+    },
+    {
+      "name": "ntl.watchdog.events",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-message-ttl": 600000,
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "default",
+      "vhost": "/",
+      "durable": false,
+      "auto_delete": true,
+      "arguments": {}
+    },
+    {
+      "name": "ss-mw",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "ap.mon.vsm.events.history",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-max-length": 100
+      }
+    },
+    {
+      "name": "parser.watchdog.user.events-usercaem2sqa",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "monitoring.restreamer.amq-client",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "watchdog.messages",
+      "vhost": "messengers",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "viber.response.messages",
+      "vhost": "messengers",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    }
+  ],
+  "exchanges": [
+    {
+      "name": "vl.topic",
+      "vhost": "/",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "ks.exchange",
+      "vhost": "/",
+      "type": "fanout",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "ap.directout",
+      "vhost": "/",
+      "type": "fanout",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "app.security.refresh",
+      "vhost": "/",
+      "type": "fanout",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "app.watchdog.events.topic",
+      "vhost": "/",
+      "type": "fanout",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "stat-server.dlx.fanout",
+      "vhost": "/",
+      "type": "fanout",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "ss-mw.topic",
+      "vhost": "/",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "ap.vas.task.state",
+      "vhost": "/",
+      "type": "fanout",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "audio-analytic-service.topic",
+      "vhost": "/",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "ap.mon.rules",
+      "vhost": "/",
+      "type": "fanout",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "ap.vas.state",
+      "vhost": "/",
+      "type": "fanout",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "itv.topic",
+      "vhost": "/",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "ntl.allevents",
+      "vhost": "/",
+      "type": "fanout",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "ntl.topic",
+      "vhost": "/",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "app.streaming.status",
+      "vhost": "/",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "ap.metadata",
+      "vhost": "/",
+      "type": "fanout",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "ntrs.security",
+      "vhost": "/",
+      "type": "fanout",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "StatserverExchange",
+      "vhost": "/",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "ap.mon.vsm.events",
+      "vhost": "/",
+      "type": "fanout",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "audio-analytic-service.dlx.fanout",
+      "vhost": "/",
+      "type": "fanout",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "amq_prod.topic",
+      "vhost": "/",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "vbr_inspector",
+      "vhost": "/",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "ap.mon.events",
+      "vhost": "/",
+      "type": "fanout",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "stat-server.topic",
+      "vhost": "/",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "app.watchdog.messages.topic",
+      "vhost": "messengers",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    }
+  ],
+  "bindings": [
+    {
+      "source": "amq.topic",
+      "vhost": "/",
+      "destination": "monitoring.analytics.amq-client",
+      "destination_type": "queue",
+      "routing_key": "monitoring.analytics.#",
+      "arguments": {}
+    },
+    {
+      "source": "amq.topic",
+      "vhost": "/",
+      "destination": "monitoring.channelstatus.amq-client",
+      "destination_type": "queue",
+      "routing_key": "monitoring.channelstatus.#",
+      "arguments": {}
+    },
+    {
+      "source": "amq.topic",
+      "vhost": "/",
+      "destination": "monitoring.restreamer.amq-client",
+      "destination_type": "queue",
+      "routing_key": "monitoring.restreamer.#",
+      "arguments": {}
+    },
+    {
+      "source": "amq.topic",
+      "vhost": "/",
+      "destination": "monitoring.snapshot.amq-client",
+      "destination_type": "queue",
+      "routing_key": "monitoring.snapshot.#",
+      "arguments": {}
+    },
+    {
+      "source": "amq_prod.topic",
+      "vhost": "/",
+      "destination": "monitoring.analytics.amq-client",
+      "destination_type": "queue",
+      "routing_key": "monitoring.analytics.#",
+      "arguments": {}
+    },
+    {
+      "source": "amq_prod.topic",
+      "vhost": "/",
+      "destination": "monitoring.channelstatus.amq-client",
+      "destination_type": "queue",
+      "routing_key": "monitoring.channelstatus.#",
+      "arguments": {}
+    },
+    {
+      "source": "amq_prod.topic",
+      "vhost": "/",
+      "destination": "monitoring.restreamer.amq-client",
+      "destination_type": "queue",
+      "routing_key": "monitoring.restreamer.#",
+      "arguments": {}
+    },
+    {
+      "source": "amq_prod.topic",
+      "vhost": "/",
+      "destination": "monitoring.snapshot.amq-client",
+      "destination_type": "queue",
+      "routing_key": "monitoring.snapshot.#",
+      "arguments": {}
+    },
+    {
+      "source": "ap.directout",
+      "vhost": "/",
+      "destination": "ap.grz.to-sink",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    },
+    {
+      "source": "ap.directout",
+      "vhost": "/",
+      "destination": "ap.grz.to-sink-2",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    },
+    {
+      "source": "ap.metadata",
+      "vhost": "/",
+      "destination": "ap.analyt",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    },
+    {
+      "source": "ap.metadata",
+      "vhost": "/",
+      "destination": "ap.mda.metadata",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    },
+    {
+      "source": "ap.metadata",
+      "vhost": "/",
+      "destination": "ap.mon.metadata",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    },
+    {
+      "source": "ap.mon.events",
+      "vhost": "/",
+      "destination": "ks.exchange",
+      "destination_type": "exchange",
+      "routing_key": "",
+      "arguments": {}
+    },
+    {
+      "source": "ap.mon.events",
+      "vhost": "/",
+      "destination": "ap.mon.events",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    },
+    {
+      "source": "ap.mon.events",
+      "vhost": "/",
+      "destination": "ap.mon.events.history",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    },
+    {
+      "source": "ap.mon.events",
+      "vhost": "/",
+      "destination": "monitoring.analytics.amq-client",
+      "destination_type": "queue",
+      "routing_key": "monitoring.analytics.#",
+      "arguments": {}
+    },
+    {
+      "source": "ap.mon.rules",
+      "vhost": "/",
+      "destination": "ap.mon.rules",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    },
+    {
+      "source": "ap.mon.vsm.events",
+      "vhost": "/",
+      "destination": "ap.mon.vsm.events",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    },
+    {
+      "source": "ap.mon.vsm.events",
+      "vhost": "/",
+      "destination": "ap.mon.vsm.events.history",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    },
+    {
+      "source": "ap.vas.state",
+      "vhost": "/",
+      "destination": "ap.vas.state.queue.ap-w:8080",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    },
+    {
+      "source": "ap.vas.task.state",
+      "vhost": "/",
+      "destination": "ap.vas.task.state.queue.ap-w:8080",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    },
+    {
+      "source": "audio-analytic-service.dlx.fanout",
+      "vhost": "/",
+      "destination": "audio-analytic-service.dlx.queue",
+      "destination_type": "queue",
+      "routing_key": "#",
+      "arguments": {}
+    },
+    {
+      "source": "audio-analytic-service.topic",
+      "vhost": "/",
+      "destination": "monitoring.audioAnalyticServiceEvents.amq-client",
+      "destination_type": "queue",
+      "routing_key": "monitoring.audioAnalyticServiceEvents.#",
+      "arguments": {}
+    },
+    {
+      "source": "app.watchdog.events.topic",
+      "vhost": "/",
+      "destination": "watchdog.events",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    },
+    {
+      "source": "app.watchdog.events.topic",
+      "vhost": "/",
+      "destination": "ks.exchange",
+      "destination_type": "exchange",
+      "routing_key": "#",
+      "arguments": {}
+    },
+    {
+      "source": "itv.topic",
+      "vhost": "/",
+      "destination": "itv.watchdog.events",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    },
+    {
+      "source": "ntl.allevents",
+      "vhost": "/",
+      "destination": "ntl.allevents",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    },
+    {
+      "source": "ntl.topic",
+      "vhost": "/",
+      "destination": "ntl.watchdog.events.history",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    },
+    {
+      "source": "ntl.topic",
+      "vhost": "/",
+      "destination": "ks.exchange",
+      "destination_type": "exchange",
+      "routing_key": "#",
+      "arguments": {}
+    },
+    {
+      "source": "ntl.topic",
+      "vhost": "/",
+      "destination": "ntl.watchdog.events",
+      "destination_type": "queue",
+      "routing_key": "#",
+      "arguments": {}
+    },
+    {
+      "source": "ntl.topic",
+      "vhost": "/",
+      "destination": "ntl.watchdog.events.history",
+      "destination_type": "queue",
+      "routing_key": "#",
+      "arguments": {}
+    },
+    {
+      "source": "ntrs.security",
+      "vhost": "/",
+      "destination": "default",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    },
+    {
+      "source": "stat-server.dlx.fanout",
+      "vhost": "/",
+      "destination": "stat-server.dlx.queue",
+      "destination_type": "queue",
+      "routing_key": "#",
+      "arguments": {}
+    },
+    {
+      "source": "stat-server.topic",
+      "vhost": "/",
+      "destination": "monitoring.statServerEvents.amq-client",
+      "destination_type": "queue",
+      "routing_key": "monitoring.statServerEvents.#",
+      "arguments": {}
+    },
+    {
+      "source": "ss-mw.topic",
+      "vhost": "/",
+      "destination": "ss-mw",
+      "destination_type": "queue",
+      "routing_key": "#",
+      "arguments": {}
+    },
+    {
+      "source": "vl.topic",
+      "vhost": "/",
+      "destination": "vl.watchdog.events",
+      "destination_type": "queue",
+      "routing_key": "#",
+      "arguments": {}
+    }
+  ]
+}

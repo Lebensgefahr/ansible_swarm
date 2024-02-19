@@ -1,0 +1,8 @@
+- name: "Create personal mount directory for every instance STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+  file:
+    dest: "{{ domain_volumes }}/{{stack_name}}/{{ role_name }}/data/{{ stack_name }}_{{ role_name }}_{{ replica_number + 1 }}"
+    state: directory
+  become: yes
+  loop: "{{ range(stacks[stack_name][role_name]['replicas']) }}"
+  loop_control:
+    loop_var: replica_number

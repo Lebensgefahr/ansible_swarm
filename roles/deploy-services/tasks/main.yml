@@ -1,0 +1,14 @@
+---
+
+- name: Clean installation
+  include_tasks: clean.yml
+  tags:
+    - never
+    - clean
+
+- name: Deploy services
+  include_tasks: deploy.yml
+
+- name: Remove disabled services
+  include_tasks: remove.yml
+

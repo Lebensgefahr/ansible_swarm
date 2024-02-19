@@ -1,0 +1,35 @@
+version: '3.9'
+
+services:
+  {{ role_name }}:
+    image: docker-hub.domain.ru/docker_swarm/node-exporter:1
+    hostname: "{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}"
+#    ports:
+#      - 9100:9100
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    environment:
+      - HOST_HOSTNAME={% raw %}{{.Node.Hostname}}{% endraw %}
+
+      - NODE_NAME={% raw %}{{.Node.Hostname}}{% endraw %}
+
+      - NODE_ID={% raw %}{{.Node.ID}}{% endraw %}
+
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--ssc.filesystem.ignored-mount-points'
+      - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
+      - '--ssc.textfile.directory=/etc/node-exporter/'
+    networks: {{ stacks[stack_name][role_name]['networks'] | list }}
+    extra_hosts: {{ stacks[stack_name][role_name]['extra_hosts'] }}
+    deploy:
+      mode: global
+      resources:
+        limits:
+          memory: 128M
+
+networks: {{ stacks[stack_name][role_name]['networks'] }}

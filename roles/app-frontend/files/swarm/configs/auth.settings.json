@@ -1,0 +1,14 @@
+{
+	"moduleId": "mw-portal",
+	"i18n": {
+		"en": {},
+		"ru": {
+			"js.windows.login.portal.support": "Техническая поддержка: support@domain.ru",
+			"js.windows.login.portal.title": "Cистема видеонаблюдения г. Санкт-Петербург",
+			"js.windows.login.portal.errors.general": "Неверный логин и/или пароль. Проверьте раскладку клавиатуры, не нажата ли клавиша «Caps Lock» и попробуйте авторизоваться еще раз"
+		}
+	},
+    "settings": {
+        "LOGO": "domain"
+    }
+}

@@ -1,0 +1,36 @@
+---
+
+- name: "Remove service configs STACK: {{ stack_name }}"
+  ansible.builtin.include_role:
+    name: "{{ item.key }}"
+    tasks_from: ../../{{ role_name }}/tasks/clean-service.yml
+#    tasks_from: service
+#  when: item.value.enabled
+  with_dict: "{{ stacks[stack_name] }}"
+  tags:
+    - never
+    - clean
+
+- name: "Remove networks STACK: {{ stack_name }}"
+  community.docker.docker_network:
+    name: "{{ stack_name+'_'+network_name.key }}"
+    state: absent
+  with_dict: "{{ stacks[stack_name] }}"
+  loop_control:
+    loop_var: network_name
+  when: network_name.value.enabled
+  retries: 3
+  delay: 3
+  register: result
+  until: result is not failed
+  tags:
+    - never
+    - clean
+
+- name: Remove {{ domain_home }} directory
+  file:
+    path: "{{ domain_home }}"
+    state: absent
+  tags:
+    - never
+    - clean

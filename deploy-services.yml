@@ -1,0 +1,19 @@
+---
+#- name: Create streamer directories
+#  hosts: recorders
+#  roles:
+#    - load-services-envs
+#    - recorder
+
+#- name: Create streamer directories
+#  hosts: cdns
+#  roles:
+#    - load-services-envs
+#    - cdn
+
+- name: Deploy services
+  hosts: leader
+  roles:
+    - load-services-envs
+    - load-services-networks
+    - deploy-services

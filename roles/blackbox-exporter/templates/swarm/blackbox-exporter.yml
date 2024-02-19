@@ -1,0 +1,16 @@
+version: '3.9'
+
+services:
+  {{ role_name }}:
+    image: prom/blackbox-exporter:v0.23.0
+    hostname: "{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}"
+    networks: {{ stacks[stack_name][role_name]['networks'] | list }}
+    extra_hosts: {{ stacks[stack_name][role_name]['extra_hosts'] }}
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        limits:
+          memory: 64M
+
+networks: {{ stacks[stack_name][role_name]['networks'] }}

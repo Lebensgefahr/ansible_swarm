@@ -1,0 +1,13 @@
+{% for host in groups['cdns'] %}
+{% set hostloop = loop %}
+{% set ports = [2222] %}
+{% for port in ports %}
+- id: {{ 10*(hostloop.index - 1) + loop.index }}
+  description: "{{ host }}"
+  host: "{{ host }}"
+  port: {{ port }}
+  enabled: true
+  secured: false
+  type: "SECURED"
+{% endfor %}
+{% endfor %}

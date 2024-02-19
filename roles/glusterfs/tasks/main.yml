@@ -1,0 +1,169 @@
+---
+- name: Unmount glusterfs volume
+  ansible.posix.mount:
+    path: "{{ domain_opt }}/swarm/volumes"
+    state: absent
+  become: yes
+  tags:
+    - never
+    - clean
+
+- name: Remove glusterfs volume
+  gluster.gluster.gluster_volume:
+    state: absent
+    name: volumes
+    force: true
+  run_once: true
+  become: yes
+  ignore_errors: true
+  tags: 
+    - never
+    - clean
+
+- name: Remove a storage pool
+  gluster.gluster.gluster_peer:
+    state: absent
+    nodes: "glusterfs{{ groups['glusterfs'].index(item)+1 }}"
+  with_items: "{{ groups['glusterfs'] }}"
+  run_once: true
+  become: yes
+  ignore_errors: true
+  tags:
+    - never
+    - clean
+
+- name: Disable and stop service
+  ansible.builtin.systemd:
+    name: glusterd.service
+    enabled: no
+    state: stopped
+  become: yes
+  ignore_errors: true
+  tags:
+    - never
+    - clean
+
+- name: Remove packages
+  ansible.builtin.apt:
+    pkg:
+      - glusterfs-server
+      - glusterfs-client
+      - glusterfs-common
+    state: absent
+    purge: yes
+  become: yes
+  tags:
+    - never
+    - clean
+
+- name: Remove dependencies that are no longer required
+  ansible.builtin.apt:
+    autoremove: yes
+  become: yes
+  tags:
+    - clean
+    - never
+
+- name: Remove directories
+  file:
+    path: "{{ directory }}"
+    state: absent
+  with_items:
+    - "{{ domain_opt }}/glusterfs"
+    - "{{ domain_opt }}/swarm"
+  loop_control:
+    loop_var: directory
+  become: yes
+  tags:
+    - never
+    - clean
+
+- name: Remove IP addresses from hosts file
+  lineinfile:
+    dest: /etc/hosts
+    regexp: "{{ item }} glusterfs{{ groups['glusterfs'].index(item)+1 }}"
+    state: absent
+  with_items: "{{ groups['glusterfs'] }}"
+  become: yes
+  tags:
+    - never
+    - clean
+
+- name: Install packages
+  ansible.builtin.apt:
+    pkg:
+      - glusterfs-server
+      - glusterfs-client
+      - glusterfs-common
+    update_cache: yes
+  become: yes
+
+- name: Enable and start service
+  ansible.builtin.systemd:
+    name: glusterd.service
+    enabled: yes
+    state: restarted
+    daemon_reload: yes
+  become: yes
+
+- name: Add IP address to hosts file
+  lineinfile:
+    dest: /etc/hosts
+    line: "{{ item }} glusterfs{{ groups['glusterfs'].index(item)+1 }}"
+    state: present
+  with_items: "{{ groups['glusterfs'] }}"
+  become: yes
+
+- name: Create directories
+  file:
+    path: "{{ directory }}"
+    state: directory
+  with_items:
+    - "{{ domain_opt }}/swarm/volumes"
+    - "{{ domain_opt }}/glusterfs"
+  loop_control:
+    loop_var: directory
+  become: yes
+
+- name: Create a trusted storage pool
+  gluster.gluster.gluster_peer:
+    state: present
+    nodes: "glusterfs{{ groups['glusterfs'].index(item)+1 }}"
+  with_items: "{{ groups['glusterfs'] }}"
+  run_once: true
+  become: yes
+
+#TODO Investigate O_DSYNC & O_DIRECT MINIO SUPPORT
+- name: Create gluster volume
+  gluster.gluster.gluster_volume:
+    state: present
+    start_on_create: true
+    name: volumes
+    force: true
+    replicas: 3
+    bricks: "{{ domain_opt }}/glusterfs"
+#    rebalance: yes
+    cluster: "{{ groups['glusterfs'] }}"
+# WARNINIG: Some of this options allows minio to use glusterfs!!!
+    options:
+      network.remote-dio: 'enable'
+      cluster.eager-lock: 'enable'
+      performance.stat-prefetch: 'off'
+      performance.io-cache: 'off'
+      performance.read-ahead: 'off'
+      performance.quick-read: 'off'
+#      performance.strict-o-direct: 'on'
+#      network.remote-dio: 'off'
+#      performance.write-behind: 'off'
+  run_once: true
+  become: yes
+
+- name: Mount glusterfs volume
+  ansible.posix.mount:
+    src: "{{ inventory_hostname }}:/volumes"
+    path: "{{ domain_opt }}/swarm/volumes"
+    fstype: glusterfs
+    opts: rw,auto
+#,direct-io-mode=enable
+    state: mounted
+  become: yes

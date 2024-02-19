@@ -1,0 +1,72 @@
+version: '3.9'
+
+services:
+  {{ role_name }}:
+    image: eqalpha/keydb
+    hostname: "{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}"
+    ports:
+      - "6379:6379"
+    environment:
+      <<: &env {{ stacks[stack_name][role_name]['env_vars'] | to_json }}
+      REPLICAS: &replicas {{ stacks[stack_name][role_name]['replicas'] }}
+    deploy:
+      mode: replicated
+      replicas: *replicas
+      endpoint_mode: vip
+      restart_policy:
+        condition: on-failure
+#        condition: any
+      update_config:
+        parallelism: 1
+        delay: 2s
+        order: start-first
+        failure_action: rollback
+        monitor: 20s
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+    configs:
+      - source: loc-docker-entrypoint.sh
+        target: /usr/local/bin/loc-docker-entrypoint.sh
+        mode: 0755
+    entrypoint: ["/usr/local/bin/loc-docker-entrypoint.sh"]
+#Compose implementations MUST clear out any default command on the Docker image -
+#both ENTRYPOINT and CMD instruction in the Dockerfile - when entrypoint is configured by a Compose file.
+# This is default keydb image command.
+    command: ["keydb-server", "/etc/keydb/keydb.conf"]
+    networks: {{ stacks[stack_name][role_name]['networks'] | list }}
+    extra_hosts: {{ stacks[stack_name][role_name]['extra_hosts'] }}
+
+
+#  {{ role_name }}_provisioner:
+#    image: eqalpha/keydb
+#    hostname: "{% raw %}{{.Service.Name}}{% endraw %}"
+#    environment:
+#      <<: *env
+#      REPLICAS: *replicas
+#    networks:
+#      - {{ stack_name }}_{{ role_name }}
+#    deploy:
+#      restart_policy:
+#        condition: on-failure
+#    command: 'bash -c "set -e; HOST_BASENAME=$${HOSTNAME%_*}; for ((i=1; i<=$$REPLICAS; i++)); do for ((j=1; j<=$$REPLICAS; j++)); do if [[ $$i -ne $$j ]]; then echo keydb-cli -h \"$$HOST_BASENAME\"_$$i -p 6379 -a $$KEYDB_PASSWORD REPLICAOF \"$$HOST_BASENAME\"_$$j 6379; keydb-cli -h \"$$HOST_BASENAME\"_$$i -p 6379 -a $KEYDB_PASSWORD REPLICAOF \"$$HOST_BASENAME\"_$$j 6379; fi; done; done"'
+#
+#  {{ role_name }}_nginx_checker:
+#    image: ubuntu
+#    hostname: "{% raw %}{{.Service.Name}}{% endraw %}"
+#    networks:
+#      - {{ stack_name }}_{{ role_name }}
+#    command: '/bin/bash -c "apt-get update -y && apt-get -y install telnet iputils-ping iperf && sleep 100000"'
+#    extra_hosts:
+#      - "nginx:192.168.123.1"
+configs:
+  loc-docker-entrypoint.sh:
+    name: {{ config_files['loc-docker-entrypoint.sh']['name'] }}
+    external: true
+
+networks: {{ stacks[stack_name][role_name]['networks'] }}
+
+#volumes:
+ # data:
+#    name: 'keydb'
+#    name: '{% raw %}{{.Service.Name}}_{{.Task.Slot}}{%endraw%}'

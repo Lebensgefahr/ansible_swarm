@@ -1,0 +1,22 @@
+version: '3.9'
+
+services:
+  {{ role_name }}:
+    image: elastic/kibana:7.4.0
+    hostname: "{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}"
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    deploy:
+      endpoint_mode: vip
+      restart_policy:
+        condition: on-failure
+{% if stacks[stack_name][role_name]['placement'] is defined %}
+      placement:
+        constraints: [node.labels.name == {{ stacks[stack_name][role_name]['placement'] }}]
+{% endif %}
+    networks: {{ stacks[stack_name][role_name]['networks'] | list }}
+    extra_hosts: {{ stacks[stack_name][role_name]['extra_hosts'] }}
+
+networks: {{ stacks[stack_name][role_name]['networks'] }}

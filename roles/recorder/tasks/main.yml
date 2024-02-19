@@ -1,0 +1,47 @@
+# This task was only for keeping empty folder in git
+
+- name: Remove {{ role_name }} directories
+  file:
+    path: "{{ directory }}"
+    state: absent
+  with_items:
+    - "{{ domain_opt }}/storage"
+    - "{{ domain_opt }}/{{ role_name }}"
+  loop_control:
+    loop_var: directory
+  become: yes
+  tags:
+    - never
+    - clean
+
+- name: Create {{ role_name }} directories
+  file:
+    path: "{{ directory }}"
+    state: directory
+  with_items:
+#    - "{{ domain_opt }}/storage/dump"
+    - "{{ domain_opt }}/storage/dump/info"
+    - "{{ domain_opt }}/storage/rec"
+    - "{{ domain_opt }}/{{ role_name }}/etc.d"
+  loop_control:
+    loop_var: directory
+  become: yes
+
+- name: "Set {{ role_name }} directory permissions"
+  file:
+    dest: "{{ domain_opt }}/storage"
+    owner: '888'
+    group: '888'
+    recurse: yes
+  become: yes
+
+- name: Templating {{ role_name }} configs
+  template:
+    src: "{{ file }}"
+    dest: "{{ domain_opt }}/{{ role_name }}/etc.d/"
+  with_fileglob:
+    - ../templates/configs/*
+  loop_control:
+    loop_var: file
+  become: yes
+

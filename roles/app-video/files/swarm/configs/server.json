@@ -1,0 +1,41 @@
+{
+  "control": {
+    "host": "$STREAMER_ADDRESS",
+    "port": "2032"
+  },
+  "interfaces": {
+    "archive_flv": {
+      "host": "$STREAMER_ADDRESS",
+      "port": "2034"
+    },
+    "flv": {
+      "host": "$STREAMER_ADDRESS",
+      "port": "2039"
+    },
+    "archive_rtsp": {
+      "host": "$STREAMER_ADDRESS",
+      "port": "8080"
+    },
+    "rtsp": {
+      "host": "$STREAMER_ADDRESS",
+      "port": "2033"
+    },
+    "archive_control": {
+      "host": "$STREAMER_ADDRESS",
+      "port": "2035"
+    },
+    "hls": {
+      "host": "$STREAMER_ADDRESS",
+      "port": "2041"
+    },
+    "snapshot": {
+      "host": "$STREAMER_ADDRESS",
+      "port": "2040"
+    }
+  },
+  "properties": {
+    "register-channel-instead-of-create": false,
+    "unregister-channel-instead-of-delete": false
+  },
+  "apiVersion": "V1"
+}

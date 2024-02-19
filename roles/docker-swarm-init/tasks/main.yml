@@ -1,0 +1,52 @@
+---
+#- name: Check if Swarm has already been Initialized
+#  shell: docker node ls
+#  register: swarm_status
+#  ignore_errors: true
+#  tags: swarm
+
+- name: Initialize Docker Swarm
+  docker_swarm:
+    advertise_addr: "{{ ansible_host }}"
+    state: present
+#  register: swarm_results
+#    default_addr_poll: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+#  when: swarm_status.rc != 0
+  tags: swarm
+
+- name: Set first manager host fact
+  set_fact:
+    leader: "{{ inventory_hostname }}"
+  delegate_facts: true
+  delegate_to: localhost
+  run_once: true
+  tags: swarm
+
+- name: Get the Manager join-token
+  shell: docker swarm join-token --quiet manager
+  register: manager_token
+  run_once: true
+  tags: swarm
+
+- name: Set fact with Manager join-token
+  set_fact:
+    manager_token: "{{ manager_token }}"
+  delegate_facts: true
+  delegate_to: localhost
+  run_once: true
+  tags: swarm
+
+- name: Get the worker join-token
+  shell: docker swarm join-token --quiet worker
+  register: worker_token
+  run_once: true
+  tags: swarm
+
+- name: Set fact with Worker join-token
+  set_fact:
+    worker_token: "{{ worker_token }}"
+  delegate_facts: true
+  delegate_to: localhost
+  run_once: true
+  tags: swarm
+

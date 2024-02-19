@@ -1,0 +1,59 @@
+---
+
+- name: workers leave the swarm
+  hosts: workers
+  roles:
+    - docker-swarm-leave
+  tags:
+    - never
+    - clean
+    - swarm_leave
+
+- name: managers leave the swarm
+  hosts: managers
+  roles:
+    - docker-swarm-leave
+  tags:
+    - never
+    - clean
+    - swarm_leave
+
+- name: managers leave the swarm
+  hosts: leader
+  roles:
+    - docker-swarm-leave
+  tags:
+    - never
+    - clean
+
+- name: install docker
+  hosts: docker_swarm
+  roles:
+    - docker-installation
+
+- name: initialize docker swarm
+  hosts: leader
+  roles:
+    - docker-swarm-init
+
+- name: add workers to the swarm
+  hosts: managers
+  roles:
+    - docker-swarm-add-manager
+
+- name: add workers to the swarm
+  hosts: workers
+  roles:
+    - docker-swarm-add-worker
+
+- name: Create lables for a docker swarm nodes
+  hosts: leader
+  roles:
+    - docker-swarm-add-labels
+  tags:
+    - labels
+
+- name: Install glusterfs
+  hosts: glusterfs
+  roles:
+    - glusterfs

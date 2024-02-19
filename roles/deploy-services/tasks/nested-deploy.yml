@@ -1,0 +1,87 @@
+---
+
+- name: "Deploy services STACK: {{ stack_name }}"
+  ansible.builtin.include_role:
+    name: "{{ item.key }}"
+    tasks_from: ../../{{ role_name }}/tasks/deploy-service.yml
+#    tasks_from: service
+  when: item.value.enabled
+  with_dict: "{{ stacks[stack_name] }}"
+
+#- name: Remove disabled services
+#  ansible.builtin.include_role:
+#    name: "{{ item.key }}"
+#    tasks_from: ../../{{ role_name }}/tasks/remove-service.yml
+#    tasks_from: service
+#  when: not item.value.enabled
+#  with_dict: "{{ stacks[stack_name] }}"
+
+#- name: Remove service configs
+#  ansible.builtin.include_role:
+#    name: "{{ item.key }}"
+#    tasks_from: ../../{{ role_name }}/tasks/deploy-service.yml
+#    tasks_from: service
+#  when: item.value.enabled
+#  with_dict: "{{ stacks[stack_name] }}"
+#  tags:
+#    - clean
+#    - never
+
+
+#- name: Create network for {{ stack_name }} stack
+#  community.docker.docker_network:
+#    name: "{{ stack_name }}"
+#    driver: overlay
+#    attachable: true
+
+
+#- name: Remove {{ stack_name }} stack
+#  community.docker.docker_stack:
+#    name: "{{ stack_name }}"
+#    state: absent
+#  tags:
+#    - never
+#    - clean
+
+#- name: Remove {{ stack_name }} network
+#  community.docker.docker_network:
+#    name: "{{ stack_name }}"
+#    state: absent
+#  tags:
+#    - never
+#    - clean
+
+
+#- name: Remove config files
+#  file:
+#    path: "{{ domain_home }}/{{ stack_name }}"
+#    state: absent
+#  tags:
+#    - never
+#    - clean
+
+#- name: Set fact with networks
+#  set_fact:
+#    networks_to_create: "{{ item.value.add_net }}"
+#  when:
+#    - item.value.enabled
+#    - item.value.add_net is defined
+#  with_dict: "{{ stacks[stack_name] }}"
+#  tags:
+#    - clean
+
+#- name: Show networks of STACK: {{ stack_name }}
+#  debug:
+#    msg: "{{ networks_to_create }}"
+#  when: 
+#    - networks_to_create is defined
+#  tags:
+#    - clean
+
+#- name: Create networks
+#  community.docker.docker_network:
+#    name: "{{ network_name }}"
+#    driver: overlay
+#  with_items: "{{ networks_to_create }}"
+#  loop_control:
+#    loop_var: network_name

@@ -1,0 +1,4 @@
+URL_ENCODER_PASSWORD: POFiG-passwd
+JAVA_MEM_OPTS: -Xmx1G -Xms1G -XX:NewSize=512M -XX:MaxPermSize=512M
+JAVA_CUSTOM_OPTS: -Dspring.app-datasource.jdbcUrl=jdbc:mysql://mariadb/app?useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Europe/Moscow&characterEncoding=utf8
+TZ: /etc/localtime

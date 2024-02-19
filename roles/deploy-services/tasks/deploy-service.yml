@@ -1,0 +1,220 @@
+---
+
+- name: "Create service networks STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+  community.docker.docker_network:
+    name: "{{ network_name.key }}"
+    driver: overlay
+#    attachable: true
+  with_dict: "{{ stacks[stack_name][role_name]['networks'] }}"
+  when: stacks[stack_name][role_name]['networks'] is defined
+#  when: network_connections[role_name] is defined
+  loop_control:
+    loop_var: network_name
+
+- name: "Create service networks STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+  community.docker.docker_network:
+    name: "{{ network_name.key }}"
+    driver: overlay
+#    attachable: true
+  with_dict: "{{ stacks[stack_name][role_name]['networks'] }}"
+  when: stacks[stack_name][role_name]['networks'] is defined
+#  when: network_connections[role_name] is defined
+  loop_control:
+    loop_var: network_name
+
+- block:
+    - name: "Load docker environment variables STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+      ansible.builtin.include_vars:
+        file: "{{ inventory_dir }}/group_vars/swarm/{{ stack_name }}/docker.yml"
+        name: docker_envs
+    - set_fact:
+        docker_env_vars: "{{ docker_envs }}"
+  rescue:
+    - set_fact:
+        docker_env_vars: {}
+
+- name: "Show docker environment variables STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+  debug:
+    msg: "{{ docker_env_vars }}"
+
+#- name: "Create volume directories structure STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+#  file:
+#    path: "{{ domain_volumes }}/{{stack_name}}/{{ role_name }}/{{ directory.path }}"
+#    state: directory
+#    mode: '0755'
+#  loop_control:
+#    loop_var: directory
+#  with_filetree:
+#    - swarm/volumes/
+#  when: directory.state == 'directory'
+#  become: yes
+
+#- name: "Copy volume files STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+#  copy:
+#    src: "{{ file.src }}"
+#    dest: "{{ domain_volumes }}/{{stack_name}}/{{ role_name }}/{{ file.path }}"
+#    mode: '0644'
+#  with_filetree:
+#    - swarm/volumes/
+#  loop_control:
+#    loop_var: file
+#  when: file.state == 'file'
+#  become: yes
+
+- name: "Processing volume tasks STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+  ansible.builtin.include_tasks:
+    file: "{{ volume_tasks }}"
+  with_first_found:
+    - files:
+        - "roles/{{ role_name }}/tasks/volumes.yml"
+      skip: true
+  loop_control:
+    loop_var: volume_tasks
+
+#- name: "Create config directories STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+#  file:
+#    path: "{{ directory }}"
+#    state: directory
+#  loop_control:
+#    loop_var: directory
+#  with_items:
+#    - "{{ domain_home }}/{{stack_name}}/{{ role_name }}/configs"
+
+# TODO process swarm configs directory recursively
+#- name: "Create directories structure STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+#  file:
+#    path: "{{ domain_home }}/{{stack_name}}/{{ role_name }}/configs/{{ directory.path }}"
+#    state: directory
+#  loop_control:
+#    loop_var: directory
+#  with_filetree:
+#    - swarm/configs
+#  when: directory.state == 'directory'
+#- name: "Copy config files STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+#  copy:
+#    src: "{{ file.src }}"
+#    dest: "{{ domain_home }}/{{stack_name}}/{{ role_name }}/configs/{{ file.path }}"
+#  with_filetree:
+#    - swarm/configs/
+#  loop_control:
+#    loop_var: file
+#  when: file.state == 'file'
+#  register: copied_configs
+
+#- debug:
+#    msg: "{{ copied_configs }}"
+
+- name: "Copy config files STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+  copy:
+    src: "{{ file }}"
+    dest: "{{ domain_home }}/{{stack_name}}/{{ role_name }}/configs/"
+  with_fileglob:
+    - swarm/configs/*
+  loop_control:
+    loop_var: file
+  register: copied_configs
+
+- debug:
+    msg: "{{ copied_configs }}"
+
+- set_fact:
+    config_files: {}
+
+# Fill dict when recursive directories processing is on
+#- name: "Fill dict with copied configs STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+#  set_fact:
+#    config_files: "{{ config_files | combine({results.file.src|basename:{'name':stack_name+'_'+role_name+'_'+results.file.src|basename, 'src':results.file.src, 'dest':results.dest,'busy':results.failed, 'changed':results.changed }}, recursive=True)}}"
+#  with_items: "{{ copied_configs.results }}"
+#  loop_control:
+#    loop_var: results
+#  when: results.file.state == 'file'
+
+- name: "Fill dict with copied configs STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+  set_fact:
+    config_files: "{{ config_files | combine({results.file|basename:{'name':stack_name+'_'+role_name+'_'+results.file|basename, 'src':results.file, 'dest':results.dest,'busy':results.failed, 'changed':results.changed }}, recursive=True)}}"
+  with_items: "{{ copied_configs.results }}"
+  loop_control:
+    loop_var: results
+
+- debug:
+    msg: "{{config_files}}"
+
+- name: "Templating config files STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+  template:
+    src: "{{ file }}"
+    dest: "{{ domain_home }}/{{stack_name}}/{{ role_name }}/configs/"
+  with_fileglob:
+    - ../templates/swarm/configs/*
+  loop_control:
+    loop_var: file
+  register: copied_configs
+
+- debug:
+    msg: "{{ copied_configs }}"
+
+
+- name: "Fill dict with templated configs STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+  set_fact:
+    config_files: "{{ config_files | combine({results.file|basename:{'name':stack_name+'_'+role_name+'_'+results.file|basename, 'src':results.file, 'dest':results.dest,'busy':results.failed, 'changed':results.changed }}, recursive=True)}}"
+  with_items: "{{ copied_configs.results }}"
+  loop_control:
+    loop_var: results
+
+- debug:
+    msg: "{{config_files}}"
+
+- name: "Create configs and check if they are not busy STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+  shell: 'docker config rm {{ config.value.name }}; \
+         docker config create --template-driver golang {{ config.value.name }} {{ config.value.dest }}'
+  with_dict: "{{ config_files }}"
+  loop_control:
+    loop_var: config
+  register: configs_create
+  ignore_errors: true
+
+- debug:
+    msg: "{{ config_files }}"
+
+- name: "Update config names in dict if they were changed and are busy STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+  set_fact:
+    config_files: "{{ config_files | combine({results.config.key:{'name':'new-'+stack_name+'_'+role_name+'_'+results.config.key, 'busy':results.failed }}, recursive=True)}}"
+  with_items: "{{ configs_create.results }}"
+  when: (results.failed and config_files[results.config.key].changed) or (not results.failed and not config_files[results.config.key].changed)
+  loop_control:
+    loop_var: results
+
+- debug:
+    msg: "{{ config_files }}"
+
+- name: "Create new configs if they are busy STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+  shell: 'docker config rm {{ config.value.name }}; \
+         docker config create --template-driver golang {{ config.value.name }} {{ config.value.dest }}'
+  with_dict: "{{ config_files }}"
+  loop_control:
+    loop_var: config
+  ignore_errors: true
+
+- debug:
+    msg: "{{ stacks[stack_name][role_name]['networks'] }}"
+  when: stacks[stack_name][role_name]['networks'] is defined
+
+- debug:
+    msg: "{{ stacks[stack_name][role_name] }}"
+
+- name: "Copy compose file STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+  template:
+    src: "swarm/{{ role_name }}.yml"
+    dest: "{{ domain_home }}/{{ stack_name }}/{{ role_name }}/"
+
+- name: "Deploy from a compose file STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+  docker_stack:
+    with_registry_auth: true
+    state: present
+    name: "{{ stack_name }}"
+    compose:
+      - "{{ domain_home }}/{{ stack_name }}/{{ role_name }}/{{ role_name }}.yml"
+  environment: "{{ docker_env_vars }}"
+#  environment: "{{ env_vars }}"
+#    - "{{ shared_env_vars }}"
+#    - "{{ exclusive_env_vars }}"
+

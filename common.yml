@@ -1,0 +1,6 @@
+---
+- name: Make common settings
+  hosts: docker_swarm
+  roles:
+    - common
+

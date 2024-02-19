@@ -1,0 +1,564 @@
+{
+  "BitrateCalculator": {
+    "avg-bitrate-calc-period": 900,
+    "enabled": true,
+    "low-bitrate-detection-period": 900,
+    "signal-on-low-bitrate": 800000
+  },
+  "CDN": {
+    "HLS": {
+      "channel-expiration-time": 60000,
+      "chunk-expiration-time": 60000,
+      "chunk-length": 4000,
+      "chunk-number": 3,
+      "timer-interval": 8500
+    },
+    "VideoService": {
+      "video-service-login": "",
+      "video-service-password": "",
+      "video-service-timeout": 10,
+      "video-service-url": ""
+    },
+    "app-dvr-workaround": false,
+    "cdn": 2,
+    "chain-retransmission": "",
+    "check_timeout": 300,
+    "forbid-rabbit-getpos-events": false,
+    "http-handler": "cdn",
+    "pack_size": 100,
+    "password": "passwd",
+    "port": 2222,
+    "rabbit-logger-play-after-abseek-delay": 2000,
+    "rabbitmq-host": "localhost",
+    "rabbitmq-max-unsent-messages": 10000,
+    "rabbitmq-password": "guest",
+    "rabbitmq-persist-file": "/opt/domain/streamer/rabbit-msgs",
+    "rabbitmq-port": 5672,
+    "rabbitmq-resend-count": 1,
+    "rabbitmq-resend-timeout": 100,
+    "rabbitmq-security-queue-name": "",
+    "rabbitmq-security-refresh-exchange": "app.security.refresh",
+    "rabbitmq-streaming-status-exchange": "app.streaming.status",
+    "rabbitmq-username": "guest",
+    "rtsp-handler": "cdn",
+    "service": false,
+    "timeout_between_packs": 100,
+    "token-cache-expiration-archive": 0,
+    "token-cache-expiration-archive-snapshots": 300,
+    "token-cache-expiration-live": 0,
+    "token-cache-expiration-live-snapshots": 300,
+    "token-service": "stub",
+    "transcode-g711-to-aac": false,
+    "uri-prefix": "",
+    "white_list": []
+  },
+  "CdnProxy": {
+    "handlers": {
+      "rawlive": {
+        "http-handler": "rawlive"
+      }
+    },
+    "port": 9999,
+    "service": false
+  },
+  "FpsCalculator": {
+    "avg-fps-detection-period": 900,
+    "avg-fps-pts-mode": false,
+    "avg-fps-pts-reset-enabled": true,
+    "enabled": false,
+    "fps-calculation-period": 5000,
+    "fps-update-in-stream-info-enabled": true,
+    "minimal-fps-alert": 9,
+    "minimal-fps-detection-period": 900,
+    "stream-fps-pulse-period": 900
+  },
+  "HLS": {
+    "append-ts-to-control-on-archive-query": false,
+    "channel-expiration-time": 60000,
+    "chunk-expiration-time": 60000,
+    "chunk-length": 4000,
+    "chunk-number": 3,
+    "downloaded-url-remove-timeout": 600,
+    "enable-audio": false,
+    "enable-find-nalu-optimize": true,
+    "enable-gop-chunking": false,
+    "gop-chunking-count": 1,
+    "is_http": true,
+    "timer-interval": 8500
+  },
+  "License": null,
+  "Monit": {
+    "check-attempts": 3,
+    "check-interval": 60000,
+    "check-iotimeout": 5000
+  },
+  "NewScreenshots": {
+    "disable-precise-shot-algorithm": false,
+    "enable-rtsp-source": true,
+    "enable-vsm-source": true,
+    "gif-range": "-3.+3",
+    "handlers": {
+      "meta": {
+        "http-handler": "meta-out"
+      },
+      "shot": {
+        "http-handler": "shot-out"
+      }
+    },
+    "handlers-thread-number": 1,
+    "jpeg-quality": 3,
+    "max-frames-to-wait-precise-shot": 10,
+    "max-frames-to-wait-shot": 1,
+    "port": 2231,
+    "recarchive-request-template": "http://%s:2034/%s/ck%d/0/0?proto=cdn&recarchive",
+    "rewind-seconds-before-precise-shot": 5,
+    "rewind-seconds-multiplicator": 1.5,
+    "service": false,
+    "use-recarchive-for-ts-shots": false
+  },
+  "OddRobot": {
+    "enabled": false,
+    "idle-suspend-timeout": 10,
+    "od-channel-pool": 10,
+    "od-channel-suspend-timeout": 20,
+    "od-time-before-get-new-channels": 5
+  },
+  "PicAnalyzer": {
+    "archive_timeshift": 10,
+    "black_list": [
+      "10.200.82.105",
+      "10.200.82.106",
+      "10.200.17.60",
+      "172.16.1.190"
+    ],
+    "app_list_reload": 5,
+    "app_login": "login",
+    "app_password": "password",
+    "app_service": "",
+    "connection_timeout": 3,
+    "handlers": {
+      "picanalyzer": {
+        "http-handler": "picanalyzer"
+      }
+    },
+    "keep-monochr-in-blue-queue-in-sec": 10,
+    "max_url_per_request": 1,
+    "monochrome_path": "/tmp/",
+    "number_of_clients": 1,
+    "one_server_for_one_client": true,
+    "port": 7777,
+    "rabbitmq-host": "localhost",
+    "rabbitmq-monocolored-screen-exchange": "topic",
+    "rabbitmq-password": "guest",
+    "rabbitmq-port": 5672,
+    "rabbitmq-routing-key": "routing_key",
+    "rabbitmq-username": "guest",
+    "service": false,
+    "sleep": false,
+    "sleep-between-blue-queue-process-in-sec": 100,
+    "sources": [
+      "http://localhost:2032"
+    ],
+    "threshold": 0.4,
+    "use_archive_shot": true
+  },
+  "Plugins": {
+    "AMQP": {
+      "confirm-mode": false,
+      "cs-enabled": true,
+      "enabled": true,
+      "max-pending-queue-size": 100,
+      "max-routing-key-length": 255,
+      "rabbitmq-exchange": "amq.topic",
+      "rabbitmq-host": "rabbitmq",
+      "rabbitmq-password": "recorder",
+      "rabbitmq-port": 5672,
+      "rabbitmq-prefix-key": "monitoring.channelstatus.#",
+      "rabbitmq-user": "recorder",
+      "ss-enabled": true
+    },
+    "SMTP": {
+      "eanbled": false,
+      "enabled": false,
+      "from": "",
+      "password": "",
+      "recipient": "",
+      "server": "",
+      "user": ""
+    },
+    "XMPP": {
+      "enabled": false,
+      "xmpp-jid": "monit@canva.org/res",
+      "xmpp-msg-prefix": "localhost",
+      "xmpp-pass": "monit"
+    }
+  },
+  "RTMP": {
+    "port": 1935,
+    "rtmppush_client_port": 1936,
+    "server_location": "localhost",
+    "service": false
+  },
+  "RTSP": {
+    "control-port": 2232,
+    "flv-time-tweak": true,
+    "max-playback-session-count": 100,
+    "port": 1232,
+    "service": false,
+    "skip-control-check": false,
+    "ts-offset": -14000
+  },
+  "RabbitLogger": {
+    "rabbitmq-exchange": "amq.topic",
+    "rabbitmq-routing-key": "monitoring",
+    "service": false
+  },
+  "Recording": {
+    "Dumping": {
+      "concurrent-jobs-count": 1,
+      "cpu-affinity": [],
+      "dump-dir": "/opt/domain/storage/dump",
+      "dump-in-background": false,
+      "enable_frame_generator": false,
+      "enable_sps_id_changer": true,
+      "font_path": "/opt/domain/streamer/etc/default_font.ttf",
+      "font_size": 60,
+      "frame_delta": 2000,
+      "jobs-info-dir": "/opt/domain/streamer/dump/info",
+      "max-jobid-generate-attempts": 3,
+      "multi_stream": true,
+      "optimize": true,
+      "pending-queue-size": 10,
+      "post-script-path": [
+        "/bin/bash",
+        "bash",
+        "-c",
+        "/opt/domain/streamer/bin/md5Gen.sh {dump.path}"
+      ],
+      "screening-mode": "no-folders",
+      "service": true,
+      "slice-processor-strict-mode": true,
+      "sps_pps_id": 10,
+      "str": "test message",
+      "task-ttl": 2592000,
+      "url-prefix": "/dump"
+    },
+    "HLS": {
+      "chunk-length": 10000,
+      "chunk-list-min-size": 1,
+      "chunk-number": 5,
+      "chunk-starts-with-keyframe": true,
+      "enabled": false,
+      "no-empty-chunk-list": false,
+      "pseudo-hls": false,
+      "url-prefix": "http://localhost:2041/"
+    },
+    "PVR": {
+      "cpu-affinity": [],
+      "job-early-initialize-delay": 0,
+      "jobs-info-dir": "/opt/domain/streamer/pvr/info",
+      "wait-for-channel-restart": 10
+    },
+    "PseudoCDN": {
+      "password": "passwd"
+    },
+    "RTSP": {
+      "default-udp-transport": false,
+      "log-bad-interleaved-data": false,
+      "log-rtsp-interleaved-data": true,
+      "max-h264-spspps-sets": 3,
+      "max-propset-length": 10000,
+      "reconnect-on-unsupported-transport": true,
+      "strict-rtp-interleaving": false,
+      "strict-rtp-payload-type": true,
+      "udp-mode-timeout": 10
+    },
+    "Streaming": {
+      "CDN": {
+        "live-port": [
+          2042
+        ]
+      },
+      "FLV": {
+        "live-port": [
+          2039
+        ]
+      },
+      "HLS": {
+        "port": [
+          2041
+        ]
+      },
+      "Mjpeg": {
+        "live-port": [
+          2047
+        ]
+      },
+      "Mobstreamer": {
+        "port": [
+          2053
+        ]
+      },
+      "PNP": {
+        "port": [
+          2043
+        ]
+      },
+      "RTSP": {
+        "archive-port": [],
+        "live-port": [
+          2033
+        ],
+        "mtu": 1500
+      },
+      "flv-audio-buffering-type": "enabled",
+      "flv-max-audio-video-unsync-ms": 10
+    },
+    "audio-es-packets-detection-interval": 300000,
+    "audio-es-packets-detection-period": 30000,
+    "av-regions-save-interval": 30000,
+    "avg-bitrate-calc-period": 900,
+    "avg-fps-pts-mode": false,
+    "avg-fps-pts-reset-enabled": true,
+    "block-devices": [],
+    "cache-size": 0,
+    "channel-read-chunk-size": 131072,
+    "chunk-size": 150000000,
+    "cutter-enabled": false,
+    "date-rotation": false,
+    "date-rotation-dispersion-delay": 60,
+    "date-rotation-granularity": 86400,
+    "date-rotation-start-time": "00:00:00",
+    "disconnect-clients-on-channel-disconnect": false,
+    "enable-stream-info-filter": true,
+    "force-start-channels-on-start": true,
+    "force-video-to-be-track0": true,
+    "frame-loss-detection-period": 900,
+    "frame-loss-threshold": 0,
+    "grab-h264-stream-only": true,
+    "idle-suspend-timeout": 0,
+    "index-block-devices": [],
+    "io-stats-collection-interval": 200,
+    "io-stats-collection-max-size": 100,
+    "io-threads": 16,
+    "io-timeout": 30000,
+    "ioerror-retry-timeout": 10000,
+    "limit-available-regions": 1000,
+    "loading-recthread-count": 1,
+    "log-level": 6,
+    "low-bitrate-detection-period": 900,
+    "max-dirty-pages": 500,
+    "max-dts-delta": 20000,
+    "max-frame-duration": 1500,
+    "max-h264-gops-cached": 2,
+    "max-jobid-generate-attempts": 3,
+    "max-nonidr-tracking-frames": 0,
+    "max-recording-ts-diff": 1000,
+    "max-ts-delta": 20000,
+    "max-unique-id-length": 200,
+    "min-available-region-length": 300000,
+    "mlockall": false,
+    "no-auto-start": false,
+    "packet-loss-measure-period": 10,
+    "packet-loss-signal-rate": 2,
+    "plugin-dir": "/opt/domain/streamer/plugin",
+    "port": [
+      2032
+    ],
+    "prealloc-index-size": 100000,
+    "recording-buffer-size-per-thread": 50000000,
+    "reload-delay": 30,
+    "restart-suspended-channel-on-query": false,
+    "retry-delay": 30,
+    "retry-delay-max": 128,
+    "retry-delay-min": 1,
+    "retry-exp": "exponent",
+    "root-dir": [
+      "/opt/domain/storage/rec"
+    ],
+    "rtsp-sends-idr-cache-by-default": true,
+    "service": true,
+    "signal-on-low-bitrate": 800000,
+    "slots": 8000,
+    "use-h264-cache": false,
+    "use-h264-idr-cache": true,
+    "use-postfixes-for-dup-channels": false
+  },
+  "Retransmission": {
+    "RTMP": {
+      "port": 1935,
+      "service": false
+    },
+    "default-recarchive-control-port": 2035,
+    "enable-audio-in-recarchives": false,
+    "h264-mangling": {
+      "sei": {
+        "payload-type": 0,
+        "send-abs-timestamp": false
+      }
+    },
+    "handlers": {
+      "hls": {
+        "http-handler": "hls-out",
+        "rtsp-handler": ""
+      },
+      "passthru": {
+        "http-handler": "http-passthru",
+        "rtsp-handler": ""
+      },
+      "rawlive": {
+        "http-handler": "flv-out",
+        "rtsp-handler": "rtsp-out"
+      },
+      "rec": {
+        "http-handler": "recarchive",
+        "rtsp-handler": ""
+      },
+      "recarchive": {
+        "http-handler": "recarchive",
+        "rtsp-handler": ""
+      },
+      "rtmppush": {
+        "http-handler": "flv-out",
+        "rtsp-handler": ""
+      },
+      "rtmprec": {
+        "http-handler": "rtmp-rec",
+        "rtsp-handler": ""
+      },
+      "rtsplive": {
+        "http-handler": "flv-out",
+        "rtsp-handler": "rtsp-out"
+      },
+      "rtsppush": {
+        "rtsp-handler": "rtsp-push"
+      },
+      "vsm": {
+        "http-handler": "vsmarchive",
+        "rtsp-handler": ""
+      },
+      "vsmarchive": {
+        "http-handler": "vsmarchive",
+        "rtsp-handler": ""
+      },
+      "vsmlive": {
+        "http-handler": "flv-out",
+        "rtsp-handler": ""
+      }
+    },
+    "live-audio-enabled": true,
+    "live-max-request-count": 50,
+    "live_audio_enabled": true,
+    "port": 2233,
+    "return-available-segments": false,
+    "rtspout-attempt-counter-timeout": 10,
+    "service": false,
+    "sps-pps-in-flv-stream": false,
+    "timeout": 20
+  },
+  "Streaming": {
+    "FLV": {
+      "port": [
+        2034
+      ]
+    },
+    "control-port": [
+      2035
+    ],
+    "flv-audio-buffering-type": "enabled",
+    "flv-max-audio-ts-outrun-ms": 200,
+    "flv-max-audio-video-unsync-ms": 10,
+    "flv-max-cached-frames": 200,
+    "generate-nonidr-in-trick-play": true,
+    "idr-only-start-speed": 8,
+    "max-stream-id": 30,
+    "output-scale": 1,
+    "reload-delay": 30,
+    "service": true,
+    "streaming-threads-count": 2,
+    "use-cdn-protocol-instead-flv": false
+  },
+  "System": {
+    "CommandTrunk": {
+      "command-packet-size": 250,
+      "command-trunk-queue-size": 5000,
+      "commandtrunk-queue-size": 100
+    },
+    "IOBuffer": {
+      "io-buffer-cache-entries": 10,
+      "io-buffer-size": 131072
+    },
+    "IOLib": {
+      "handlers-thread-number": 2,
+      "max-rbuf": 8192000,
+      "max-wbuf": 8192000,
+      "shutdown-wait-time": 3000,
+      "timeout": 30000
+    },
+    "NewVsmManager": {
+      "timeout": 10
+    },
+    "allow-prealloc-exceptions": false,
+    "bind_ip": "0.0.0.0",
+    "block-io-max-attempts": 3,
+    "gmt-clock": false,
+    "ident": "172.16.0.43:2032",
+    "ini-file": "/opt/domain/streamer/etc/streamer.json",
+    "io-buffer-size": 16384,
+    "io-threads": 16,
+    "license-module": "/opt/domain/streamer/license/defaultlicense.so",
+    "listen-backlog": 1024,
+    "log-dir": "/var/log/streamer/",
+    "log-dir-detailing": "none",
+    "log-level": 4,
+    "log-max-file-size-bytes": 52428800,
+    "log-rotation-period": 86400,
+    "max-http-query-buffer-size": 131072,
+    "max-sockets": 2048,
+    "max_nalunit_size": 50000000,
+    "max_pps_size": 100,
+    "max_sps_size": 10000,
+    "message-codes": "",
+    "message-codes-exception": [
+      99
+    ],
+    "monit-script": "",
+    "pid-file": "/var/run/is3.pid",
+    "raw2flv-converter-max-cache-size": 1000000,
+    "time-source": "clock",
+    "tz-offset": 10800
+  },
+  "Transcoding": {
+    "http-handler": "transcoding",
+    "listen-timeout": 20,
+    "port": 2234,
+    "rtsp-handler": "transcoding",
+    "service": false,
+    "timeout": 10,
+    "uri-prefix": "transcoded"
+  },
+  "VSMArchive": {
+    "FLV": {
+      "flv-time-tweak": true,
+      "port": [
+        2021
+      ]
+    },
+    "PseudoHLS": {
+      "port": [
+        2038
+      ]
+    },
+    "busy-rate": 70,
+    "control-port": [
+      2022
+    ],
+    "limit-archive-duration": 0,
+    "max-playback-session-count": 100,
+    "max-session-count": 100,
+    "service": false
+  },
+  "VSMLive": {
+    "service": false
+  }
+}

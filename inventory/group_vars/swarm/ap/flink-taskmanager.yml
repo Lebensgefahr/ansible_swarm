@@ -1,0 +1,11 @@
+ENABLE_BUILT_IN_PLUGINS: flink-s3-fs-presto-1.14.3.jar;flink-s3-fs-hadoop-1.14.3.jar
+FLINK_PROPERTIES: |-
+        jobmanager.rpc.address: flink-jobmanager
+        jobmanager.heap.size: 1G
+        taskmanager.heap.size: 2G
+        taskmanager.numberOfTaskSlots: 48
+        parallelism.default: 4
+        s3.endpoint: http://minio:9000
+        s3.access-key: admin
+        s3.secret-key: minioadmin
+        high-availability.zookeeper.quorum: zookeeper:2181

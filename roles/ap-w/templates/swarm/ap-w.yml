@@ -1,0 +1,62 @@
+version: '3.9'
+
+services:
+  {{ role_name }}:
+    image: {{ images[stack_name][role_name] }}
+    hostname: "{%raw%}{{.Service.Name}}_{{.Task.Slot}}{%endraw%}"
+    environment: {{ stacks[stack_name][role_name]['env_vars'] | to_json }}
+    ports:
+      - 8080:8080
+    deploy:
+      mode: replicated
+      replicas: {{ stacks[stack_name][role_name]['replicas'] | default (1) }}
+      endpoint_mode: vip
+      restart_policy:
+        condition: on-failure
+{% if stacks[stack_name][role_name]['placement'] is defined %}
+      placement:
+        constraints: [node.labels.name == {{ stacks[stack_name][role_name]['placement'] }}]
+{% endif %}
+      update_config:
+        parallelism: 1
+        delay: 2s
+        order: start-first
+        failure_action: rollback
+        monitor: 20s
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+    configs:
+      - source: ap-flink-conf.yaml
+        target: /usr/local/tomcat/conf/ap-w/flink-conf.yaml
+      - source: ap-main-ext.properties
+        target: /usr/local/tomcat/conf/ap-w/ap-main-ext.properties
+      - source: ap-tm-ext.properties
+        target: /usr/local/tomcat/conf/ap-w/ap-tm-ext.properties
+      - source: ap-db-ext.properties
+        target: /usr/local/tomcat/conf/ap-w/ap-db-ext.properties
+      - source: ap-w-ext.properties
+        target: /usr/local/tomcat/conf/ap-w/ap-w-ext.properties
+    networks: {{ stacks[stack_name][role_name]['networks'] | list }}
+    extra_hosts: {{ stacks[stack_name][role_name]['extra_hosts'] }}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+
+configs:
+  ap-flink-conf.yaml:
+    name: {{ config_files['ap-flink-conf.yaml']['name'] }}
+    external: true
+  ap-main-ext.properties:
+    name: {{ config_files['ap-main-ext.properties']['name'] }}
+    external: true
+  ap-tm-ext.properties:
+    name: {{ config_files['ap-tm-ext.properties']['name'] }}
+    external: true
+  ap-db-ext.properties:
+    name: {{ config_files['ap-db-ext.properties']['name'] }}
+    external: true
+  ap-w-ext.properties:
+    name: {{ config_files['ap-w-ext.properties']['name'] }}
+    external: true
+
+networks: {{ stacks[stack_name][role_name]['networks'] }}

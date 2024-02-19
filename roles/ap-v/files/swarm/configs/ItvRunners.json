@@ -1,0 +1,9 @@
+[ {
+  "runnerId" : "runner2",
+  "host" : "itv",                                                                                                                                   
+  "port" : 20109,
+  "login" : "root",
+  "password" : "root",                                                                                                                     
+  "serverName" : "hosts/itv-01",                                                                                                                               
+  "numberOfSlots" : 200                                                                                                                                        
+} ]

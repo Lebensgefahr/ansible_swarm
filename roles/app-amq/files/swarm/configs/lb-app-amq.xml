@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+  <!-- Appenders -->
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <!-- %nopex - disable stacktrace -->
+      <pattern>%d [%thread] %-5level %logger{5} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <!-- Loggers -->
+  
+  <!--
+  <logger name="org.hibernate" level="WARN" />
+  <logger name="org.hibernate.transaction.JDBCTransaction" level="INFO"/>
+  <logger name="org.hibernate.jdbc.ConnectionManager" level="INFO"/>
+  <logger name="org.springframework.orm.jpa.JpaTransactionManager" level="INFO"/>
+  <logger name="org.hibernate.SQL" level="OFF" />
+  <logger name="org.hibernate.type" level="OFF" />
+  <logger name="ru.domain.app" level="DEBUG" />
+  <logger name="ru.domain.app.skou" level="DEBUG" />
+  <logger name="ru.domain.app.job" level="DEBUG" />
+  <logger name="ru.domain.app.rabbit.listener" level="DEBUG" />
+  <logger name="ru.domain.app.ss.SSHttpClient" level="DEBUG" />
+  <logger name="ru.domain.app.ss.SSRabbitClient" level="DEBUG" />
+  <logger name="ru.domain.app.handler.ChannelStatusHandler" level="DEBUG" />
+  <logger name="ru.domain.app.handler.SnapshotEventHandler" level="DEBUG" />
+  -->
+
+  <root level="INFO">
+    <appender-ref ref="STDOUT" />
+  </root>
+
+</configuration>

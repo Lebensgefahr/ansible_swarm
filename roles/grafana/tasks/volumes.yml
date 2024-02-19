@@ -1,0 +1,39 @@
+---
+- name: "Create data directory STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+  file:
+    path: "{{ domain_volumes }}/{{stack_name}}/{{ role_name }}/data"
+    state: directory
+    mode: '0755'
+  become: yes
+
+- name: "Create volume directories structure STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+  file:
+    path: "{{ domain_volumes }}/{{stack_name}}/{{ role_name }}/{{ directory.path }}"
+    state: directory
+    mode: '0755'
+  loop_control:
+    loop_var: directory
+  with_filetree:
+    - swarm/volumes/
+  when: directory.state == 'directory'
+  become: yes
+
+- name: "Copy volume files STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+  copy:
+    src: "{{ file.src }}"
+    dest: "{{ domain_volumes }}/{{stack_name}}/{{ role_name }}/{{ file.path }}"
+    mode: '0644'
+  with_filetree:
+    - swarm/volumes/
+  loop_control:
+    loop_var: file
+  when: file.state == 'file'
+  become: yes
+
+- name: "Set volume owner and group STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+  file:
+    dest: "{{ domain_volumes }}/{{stack_name}}/{{ role_name }}"
+    owner: '472'
+    group: '0'
+    recurse: yes
+  become: yes

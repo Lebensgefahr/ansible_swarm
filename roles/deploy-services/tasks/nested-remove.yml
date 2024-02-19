@@ -1,0 +1,9 @@
+---
+
+- name: "Remove disabled services STACK: {{ stack_name }}"
+  ansible.builtin.include_role:
+    name: "{{ item.key }}"
+    tasks_from: ../../{{ role_name }}/tasks/remove-service.yml
+#    tasks_from: service
+  when: not item.value.enabled
+  with_dict: "{{ stacks[stack_name] }}"

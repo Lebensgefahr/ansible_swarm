@@ -1,0 +1,5 @@
+---
+- name: Install glusterfs
+  hosts: glusterfs
+  roles:
+    - glusterfs

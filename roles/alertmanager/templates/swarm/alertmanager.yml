@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  {{ role_name }}:
+    image: prom/alertmanager:v0.24.0
+    ports:
+      - "9093:9093"
+    configs:
+      - source: alertmanager.yml
+        target: /etc/alertmanager/config.yml
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+      - '--storage.path=/alertmanager'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - {{ domain_volumes }}/{{ stack_name }}/{{ role_name }}/data:/alertmanager
+    networks: {{ stacks[stack_name][role_name]['networks'] | list }}
+    extra_hosts: {{ stacks[stack_name][role_name]['extra_hosts'] }}
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.fstype == glusterfs
+{% if stacks[stack_name][role_name]['placement'] is defined %}
+          - node.labels.name == {{ stacks[stack_name][role_name]['placement'] }}
+{% endif %}
+      resources:
+        limits:
+          memory: 100M
+
+configs:
+  alertmanager.yml:
+    name: {{ config_files['alertmanager.yml']['name'] }}
+    external: true
+
+networks: {{ stacks[stack_name][role_name]['networks'] }}

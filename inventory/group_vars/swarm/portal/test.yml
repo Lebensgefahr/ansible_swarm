@@ -1,0 +1,3 @@
+MARIADB_HOST: mariadb1
+LOG_DEBUG: 'true'
+DEBUG: 'true'

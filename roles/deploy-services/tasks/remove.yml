@@ -1,0 +1,7 @@
+---
+
+- name: Remove disabled services
+  include_tasks: nested-remove.yml
+  with_items: "{{ stacks | list }}"
+  loop_control:
+    loop_var: stack_name

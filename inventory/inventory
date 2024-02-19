@@ -1,0 +1,44 @@
+all:
+  vars:
+    ansible_user: blitzkrieg
+  children:
+    docker_swarm:
+      children:
+        leader:
+          hosts:
+            172.16.0.20:
+        managers:
+          hosts:
+            172.16.0.30:
+        workers:
+          hosts:
+            172.16.0.43:
+        recorders:
+          hosts:
+            172.16.0.30:
+        cdns:
+          hosts:
+            172.16.0.43:
+    portal:
+      children:
+        mariadb:
+          hosts:
+            172.16.0.30:
+            172.16.0.43:
+        rabbitmq:
+          hosts:
+            172.16.0.30:
+            172.16.0.43:
+    keepalived:
+      vars:
+        virtual_ip: 172.16.0.20
+      hosts:
+        172.16.0.20:
+        172.16.0.30:
+        172.16.0.43:
+    glusterfs:
+      hosts:
+        172.16.0.20:
+        172.16.0.30:
+        172.16.0.43:
+

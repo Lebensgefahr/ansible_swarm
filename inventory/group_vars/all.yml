@@ -1,0 +1,220 @@
+domain_home: "/home/blitzkrieg/domain"
+domain_opt: "/opt/domain"
+domain_volumes: "{{ domain_opt }}/swarm/volumes"
+
+stacks:
+  fakecams:
+    fakecam:
+      enabled: false
+  recorders:
+    recorder:
+      enabled: false
+  cdns:
+    cdn:
+      enabled: false
+  portal:
+    test:
+      enabled: false
+      placement: 'node1'
+    nginx:
+      enabled: false
+      replicas: 3
+    app:
+      enabled: false
+    app-video:
+      enabled: false
+    app-token:
+      enabled: false
+    app-ptz:
+      enabled: false
+    app-nginx:
+      enabled: false
+    app-frontend:
+      enabled: false
+    app-url:
+      enabled: false
+    app-api:
+      enabled: false
+    rabbitmq:
+      enabled: false
+      replicas: 3
+    mariadb:
+      enabled: false
+    keydb:
+      enabled: false
+      replicas: 2
+    ks:
+      enabled: false
+    parser:
+      enabled: false
+
+  ss:
+    test:
+      enabled: false
+      placement: 'node3'
+    mongo-ssr:
+      enabled: false
+    mongo-ssc:
+      enabled: false
+    app-amq:
+      enabled: false
+    ssc:
+      enabled: false
+      placement: 'node3'
+    ssr:
+      enabled: false
+      placement: 'node3'
+    ssrc:
+      enabled: false
+      placement: 'node3'
+  ap:
+    ap-w:
+      enabled: false
+    ap-v:
+      enabled: false
+    flink-jobmanager:
+      enabled: false
+    flink-taskmanager:
+      enabled: false
+    zookeeper:
+      enabled: false
+      replicas: 1
+    minio:
+      enabled: false
+      placement: 'node3'
+    elasticsearch:
+      enabled: false
+    kibana:
+      enabled: false
+    kafka:
+      enabled: false
+
+  management:
+    portainer:
+      enabled: false
+
+  monitoring:
+    cadvisor:
+      enabled: false
+    prometheus:
+      enabled: true
+    node-exporter:
+      enabled: false
+    grafana:
+      enabled: true
+    blackbox-exporter:
+      enabled: false
+    alertmanager:
+      enabled: false
+
+connections:
+  portal:
+    app:
+      portal:
+        - keydb
+        - mariadb
+        - rabbitmq
+        - app-video
+        - app-token
+        - app-url
+        - app-ptz
+        - app-api
+    app-video:
+      portal:
+        - mariadb
+    app-url:
+      portal:
+        - mariadb
+    app-token:
+      portal:
+        - mariadb
+    app-nginx:
+      portal:
+        - app-frontend
+        - app
+        - parser
+    app-ptz:
+      portal:
+        - mariadb
+    ks:
+      portal:
+        - mariadb
+    parser:
+      portal:
+        - mariadb
+    app-api:
+      portal:
+        - mariadb
+    test:
+      portal:
+        - rabbitmq
+        - mariadb
+  ap:
+    ap-w:
+      ap:
+        - ap-v
+        - flink-jobmanager
+      portal:
+        - mariadb
+        - rabbitmq
+    ap-v:
+      portal:
+        - rabbitmq
+    kibana:
+      ap:
+        - elasticsearch
+    flink-jobmanager:
+      ap:
+        - minio
+        - zookeeper
+    flink-taskmanager:
+      ap:
+        - zookeeper
+        - minio
+        - elasticsearch
+      portal:
+        - rabbitmq
+
+  ss:
+    test:
+      portal:
+        - test
+    ssc:
+      ss:
+        - mongo-ssc
+        - mongo-ssr
+      portal:
+        - rabbitmq
+    ssr:
+      ss:
+        - ssrc
+        - ssc
+        - mongo-ssc
+        - mongo-ssr
+      portal:
+        - app
+    ssrc:
+      ss:
+        - mongo-ssc
+        - mongo-ssr
+    app-amq:
+      portal:
+        - mariadb
+        - rabbitmq
+#        - app-token
+  monitoring:
+    prometheus:
+      monitoring:
+        - node-exporter
+        - cadvisor
+        - alertmanager
+        - blackbox-exporter
+    grafana:
+      monitoring:
+        - prometheus
+    blackbox-exporter:
+      portal:
+        - app
+        - app-api
+        - mariadb
+

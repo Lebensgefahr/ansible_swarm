@@ -1,0 +1,22 @@
+---
+
+- name: Clean stacks
+  community.docker.docker_stack:
+    name: "{{ stack_name }}"
+    state: absent
+  with_items: "{{ stacks | list }}"
+  loop_control:
+    loop_var: stack_name
+  tags:
+    - never
+    - clean
+
+- name: Cleane stacks files
+  include_tasks: nested-clean.yml
+  with_items: "{{ stacks | list }}"
+  loop_control:
+    loop_var: stack_name
+  tags:
+    - never
+    - clean
+

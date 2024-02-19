@@ -1,0 +1,73 @@
+---
+
+- name: "Check if compose file exists for STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+  stat:
+    path: "{{ domain_home }}/{{ stack_name }}/{{ role_name }}/{{ role_name }}.yml"
+  register: compose_file
+
+- debug:
+    msg: "{{ compose_file.stat.exists }}"
+
+- name: "Remove service as it is disabled and exists STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+  block:
+
+  - name: "Remove service from stack STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+    docker_swarm_service:
+      name: "{{ stack_name }}_{{ role_name }}"
+      state: absent
+
+  - name: "Get list of services from the same deploy STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+    shell: 'docker service ls --filter name={{ stack_name }}_{{ role_name }}_ --format "{%raw%}{{.Name}}{%endraw%}"'
+    register: services_list
+
+  - name: "Remove service from the same deploy STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+    docker_swarm_service:
+      name: "{{ service_name }}"
+      state: absent
+    with_items: "{{ services_list.stdout }}"
+    loop_control:
+      loop_var: service_name
+    when:
+      - service_name != ""
+
+  - name: "Remove configs STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+    community.docker.docker_config:
+      name: "{{ stack_name+'_'+role_name+'_'+file | basename }}"
+      state: absent
+    with_fileglob:
+      - swarm/configs/*
+      - ../templates/swarm/configs/*
+    loop_control:
+      loop_var: file
+
+  - name: "Remove rotated configs for STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+    community.docker.docker_config:
+      name: "{{ 'new-'+stack_name+'_'+role_name+'_'+file | basename }}"
+      state: absent
+    with_fileglob:
+      - swarm/configs/*
+      - ../templates/swarm/configs/*
+    loop_control:
+      loop_var: file
+
+  - name: "Remove config dir STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+    file:
+      path: "{{ domain_home }}/{{ stack_name }}/{{ role_name }}"
+      state: absent
+
+  - name: "Remove volume dir STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+    file:
+      path: "{{ domain_volumes }}/{{ stack_name }}/{{ role_name }}"
+      state: absent
+    become: yes
+
+  - name: "Remove network STACK: {{ stack_name }} SERVICE: {{ role_name }}"
+    community.docker.docker_network:
+      name: "{{ stack_name+'_'+role_name }}"
+      state: absent
+    retries: 10
+    delay: 10
+    register: result
+    until: result is not failed
+
+  when: compose_file.stat.exists

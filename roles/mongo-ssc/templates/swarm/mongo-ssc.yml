@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+  {{ role_name }}:
+    image: mongo:5.0
+    hostname: "{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}"
+#    ports:
+#      - "3306:3306"
+    deploy:
+      endpoint_mode: vip
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.fstype == glusterfs
+{% if stacks[stack_name][role_name]['placement'] is defined %}
+          - node.labels.name == {{ stacks[stack_name][role_name]['placement'] }}
+{% endif %}
+    networks: {{ stacks[stack_name][role_name]['networks'] | list }}
+    extra_hosts: {{ stacks[stack_name][role_name]['extra_hosts'] }}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - {{ domain_volumes }}/{{ stack_name }}/{{ role_name }}/data:/data/db
+
+networks: {{ stacks[stack_name][role_name]['networks'] }}
+
+#volumes:
+#  {{ stack_name+'_'+role_name }}:
+#    name: {{ stack_name+'_'+role_name }}
+#    name: '{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}'

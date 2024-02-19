@@ -1,0 +1,56 @@
+version: '3.9'
+
+services:
+  {{ role_name }}:
+    image: nginx:alpine
+    hostname: "{%raw%}{{.Service.Name}}_{{.Task.Slot}}{%endraw%}"
+    environment: {{ stacks[stack_name][role_name]['env_vars'] | to_json }}
+    ports:
+      - "88:80"
+    deploy:
+      mode: replicated
+      replicas: &replicas {{ stacks[stack_name][role_name]['replicas'] | default (1) }}
+      endpoint_mode: vip
+      update_config:
+        parallelism: 1
+        delay: 2s
+        order: start-first
+        failure_action: rollback
+        monitor: 20s
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+    configs:
+      - source: index.html
+        target: /usr/share/nginx/html/index.html
+      - source: index2.html
+        target: /usr/share/nginx/html/index2.html
+    networks: {{ stacks[stack_name][role_name]['networks'] | list }}
+    extra_hosts: {{ stacks[stack_name][role_name]['extra_hosts'] }}
+    volumes:
+      - /etc/localtime:/etc/localtime
+  nginx_checker:
+    image: ubuntu
+    hostname: "{% raw %}{{.Service.Name}}{{.Task.Slot}}{% endraw %}"
+    environment:
+      REPLICAS: *replicas
+    networks: {{ stacks[stack_name][role_name]['networks'] | list }}
+    extra_hosts: {{ stacks[stack_name][role_name]['extra_hosts'] }}
+    command: '/bin/bash -c "apt-get update && apt-get -y install telnet iputils-ping iperf && sleep 100000"'
+
+#    volumes:
+#      - config:/test/
+
+configs:
+  index.html:
+    name: {{ config_files['index.html']['name'] }}
+    external: true
+  index2.html:
+    name: {{ config_files['index2.html']['name'] }}
+    external: true
+
+networks: {{ stacks[stack_name][role_name]['networks'] }}
+
+volumes:
+  config:
+    name: 'test'

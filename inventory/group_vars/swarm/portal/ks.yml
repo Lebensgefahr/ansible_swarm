@@ -1,0 +1,3 @@
+JAVA_DEFAULT_OPTS: -Dconfig.location=/opt/domain/ks/ks.properties
+DEBUG: 'true'
+TZ: /etc/localtime

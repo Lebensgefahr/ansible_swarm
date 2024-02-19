@@ -1,0 +1,14 @@
+---
+
+- name: Install {{ role_name }}
+  ansible.builtin.include_tasks:
+    file: install.yml
+  tags:
+    - interface
+
+- name: Uninstall {{ role_name }}
+  ansible.builtin.include_tasks:
+    file: uninstall.yml
+  tags:
+    - never
+    - clean

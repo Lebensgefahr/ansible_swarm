@@ -1,0 +1,47 @@
+version: '3.9'
+
+services:
+  {{ role_name }}:
+    image: {{ images[stack_name][role_name] }}
+    hostname: "{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}"
+    environment:
+      JAVA_MEM_OPTS: -Xmx1G -Xms1G -XX:NewSize=512M -XX:MaxPermSize=512M
+      JAVA_CUSTOM_OPTS: -Dconfig.location=/opt/domain/app-token/conf/app-token.config
+        -Dds.app-token-service.url=jdbc:mysql://mariadb/app_token?useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Europe/Moscow&characterEncoding=utf8
+        -Drabbitmq.connection.username=token
+        -Drabbitmq.connection.password=token
+    ports:
+      - "81:8080"
+    deploy:
+      mode: replicated
+      replicas: {{ stacks[stack_name][role_name]['replicas'] | default (1) }}
+      endpoint_mode: vip
+      restart_policy:
+        condition: on-failure
+{% if stacks[stack_name][role_name]['placement'] is defined %}
+      placement:
+        constraints: [node.labels.name == {{ stacks[stack_name][role_name]['placement'] }}]
+{% endif %}
+      update_config:
+        parallelism: 1
+        delay: 2s
+        order: start-first
+        failure_action: rollback
+        monitor: 20s
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+    configs:
+      - source: app-token.config
+        target: /opt/domain/app-token/conf/app-token.config
+    networks: {{ stacks[stack_name][role_name]['networks'] | list }}
+    extra_hosts: {{ stacks[stack_name][role_name]['extra_hosts'] }}
+    volumes:
+      - /etc/localtime:/etc/localtime
+
+configs:
+  app-token.config:
+    name: {{ config_files['app-token.config']['name'] }}
+    external: true
+
+networks: {{ stacks[stack_name][role_name]['networks'] }}

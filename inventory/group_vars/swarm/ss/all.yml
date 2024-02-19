@@ -1,0 +1,3 @@
+IMAGE: someimage1
+MARIADB_HOST: mariadb
+KEYDB_PASSWORD: sqlsql

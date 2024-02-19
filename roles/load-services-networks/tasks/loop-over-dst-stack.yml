@@ -1,0 +1,69 @@
+---
+
+- name: Loop over dst stack DEBUG
+  debug:
+    msg: "SRC_STACK:{{ src_stack_name.key }} SRC_SERVICE: {{ src_service_name.key }} DST_STACK: {{ dst_stack_name.key }} DST_SERVICE: {{ dst_service_name }}"
+  with_items: "{{ connections[src_stack_name.key][src_service_name.key][dst_stack_name.key] }}"
+#  when: connections[src_stack_name][src_service_name] != None
+  when:
+    - stacks[dst_stack_name.key][dst_service_name] is defined
+    - stacks[dst_stack_name.key][dst_service_name]['enabled']
+  loop_control:
+    loop_var: dst_service_name
+
+- name: "Add target networks SRC_STACK:{{ src_stack_name.key }} SRC_SERVICE: {{ src_service_name.key }} DST_STACK: {{ dst_stack_name.key }}"
+  set_fact:
+    stacks: "{{ stacks | combine({src_stack_name.key:{src_service_name.key:{'networks': {dst_stack_name.key+'_'+dst_service_name:{'name':dst_stack_name.key+'_'+dst_service_name, 'external': true}} }}}, recursive=True, list_merge='append')| combine({dst_stack_name.key:{dst_service_name:{'networks': {dst_stack_name.key+'_'+dst_service_name:{'name':dst_stack_name.key+'_'+dst_service_name, 'external': true}} }}}, recursive=True, list_merge='append_rp') }}"
+  with_items: "{{ connections[src_stack_name.key][src_service_name.key][dst_stack_name.key] }}"
+  when:
+    - stacks[dst_stack_name.key][dst_service_name] is defined
+    - stacks[dst_stack_name.key][dst_service_name]['enabled']
+  loop_control:
+    loop_var: dst_service_name
+  tags:
+    - clean
+
+- name: "Add extra-hosts SRC_STACK:{{ src_stack_name.key }} SRC_SERVICE: {{ src_service_name.key }} DST_STACK: {{ dst_stack_name.key }}"
+  set_fact:
+    stacks: "{{ stacks | combine({src_stack_name.key:{src_service_name.key:{'extra_hosts': [dst_service_name + ':' + groups[dst_service_name][0] ]}}}, recursive=True, list_merge='append') }}"
+  with_items: "{{ connections[src_stack_name.key][src_service_name.key][dst_stack_name.key] }}"
+  loop_control:
+    loop_var: dst_service_name
+  when:
+    - stacks[dst_stack_name.key][dst_service_name] is defined
+    - not stacks[dst_stack_name.key][dst_service_name]['enabled']
+    - groups[dst_stack_name.key] is defined
+    - groups[dst_service_name] is defined
+    - groups[dst_stack_name.key] | intersect(groups[dst_service_name]) | length > 0
+
+#- name: Show hostbased services
+#  debug:
+#    msg: " extra-hosts: {{ groups[dst_service_name][0] }}"
+#  with_items: "{{ connections[src_stack_name.key][src_service_name.key][dst_stack_name.key] }}"
+#  loop_control:
+#    loop_var: dst_service_name
+#  when:
+#    - stacks[dst_stack_name.key][dst_service_name] is defined
+#    - not stacks[dst_stack_name.key][dst_service_name]['enabled']
+#    - groups[dst_stack_name.key] is defined
+#    - groups[dst_service_name] is defined
+#    - groups[dst_stack_name.key] | intersect(groups[dst_service_name]) | length > 0
+#  tags:
+#    - clean
+
+
+#- fail:
+
+#- name: "Add extrahosts SRC_STACK:{{ src_stack_name.key }} SRC_SERVICE: {{ src_service_name.key }} DST_STACK: {{ dst_stack_name.key }}"
+#  set_fact:
+#    stacks: "{{ stacks | combine({src_stack_name.key:{src_service_name.key:{'networks': [dst_stack_name.key+'_'+dst_service_name] }}}, recursive=True, list_merge='append') }}"
+#    stacks: "{{ stacks | combine({src_stack_name.key:{src_service_name.key:{'networks': [dst_stack_name.key+'_'+dst_service_name] }}}, recursive=True, list_merge='append')| combine({dst_stack_name.key:{dst_service_name:{'networks': [dst_stack_name.key+'_'+dst_service_name] }}}, recursive=True, list_merge='append_rp') }}"
+#  with_items: "{{ connections[src_stack_name.key][src_service_name.key][dst_stack_name.key] }}"
+#  when:
+#    - stacks[dst_stack_name.key][dst_service_name] is defined
+#    - not stacks[dst_stack_name.key][dst_service_name]['enabled']
+
+#  loop_control:
+#    loop_var: dst_service_name
+ # tags:
+#    - clean

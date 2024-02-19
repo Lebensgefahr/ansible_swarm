@@ -1,0 +1,13 @@
+---
+
+- name: Load environment variables
+  include_tasks: loop-over-stacks.yml
+  with_dict: "{{ stacks }}"
+  loop_control:
+    loop_var: src_stack_name
+#  no_log: true
+
+- name: "Show stacks after loading vars"
+  debug:
+    msg: "{{ stacks }}"
+

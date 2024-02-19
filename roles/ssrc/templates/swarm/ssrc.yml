@@ -1,0 +1,45 @@
+version: '3.9'
+
+services:
+  {{ role_name }}:
+    image: {{ images[stack_name][role_name] }}
+    hostname: "{%raw%}{{.Service.Name}}_{{.Task.Slot}}{%endraw%}"
+    environment: {{ stacks[stack_name][role_name]['env_vars'] | to_json }}
+#    ports:
+#      - 3000:8080
+    deploy:
+      mode: replicated
+      replicas: {{ stacks[stack_name][role_name]['replicas'] | default (1) }}
+      endpoint_mode: vip
+      restart_policy:
+        condition: on-failure
+{% if stacks[stack_name][role_name]['placement'] is defined %}
+      placement:
+        constraints: [node.labels.name == {{ stacks[stack_name][role_name]['placement'] }}]
+{% endif %}
+      resources:
+        limits: 
+          memory: 1024M
+      update_config:
+        parallelism: 1
+        delay: 2s
+        order: start-first
+        failure_action: rollback
+        monitor: 20s
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+    configs:
+      - source: ssrc-al.conf
+        target: /opt/docker/conf/application-local.conf
+    networks: {{ stacks[stack_name][role_name]['networks'] | list }}
+    extra_hosts: {{ stacks[stack_name][role_name]['extra_hosts'] }}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+
+configs:
+  ssrc-al.conf:
+    name: {{ config_files['ssrc-al.conf']['name'] }}
+    external: true
+
+networks: {{ stacks[stack_name][role_name]['networks'] }}

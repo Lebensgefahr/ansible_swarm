@@ -1,0 +1,17 @@
+---
+
+- name: Calculate networks
+  include_tasks: loop-over-stacks.yml
+  with_dict: "{{ connections }}"
+  loop_control:
+    loop_var: src_stack_name
+  no_log: true
+  tags:
+    - clean
+
+- name: "Show stacks after network calculations"
+  debug:
+    msg: "{{ stacks }}"
+  tags:
+    - clean
+#- fail:

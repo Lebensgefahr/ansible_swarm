@@ -1,0 +1,34 @@
+rabbitmq:
+  enabled: true
+  connections:
+    - name: app-mw
+      requestedHeartbeat: 5
+      host: rabbitmq
+      username: app
+      password: sqlsql
+  exchanges:
+    - durable: true
+      name: ss-mw.topic
+      type: topic
+  queues:
+    - binding: channelstatus.#
+      durable: true
+      name: ss-mw
+
+grails:
+  mime:
+    file:
+        extensions: false
+  mail:
+    host: 127.0.0.1
+    port: 25
+    props:
+        mail.smtp.auth: false
+        mail.smtp.socketFactory.port: 25
+        mail.smtp.socketFactory.fallback: true
+    default:
+        from: gmc.test@domain.ru
+
+cameraLog:
+  writer:
+    enabled: true

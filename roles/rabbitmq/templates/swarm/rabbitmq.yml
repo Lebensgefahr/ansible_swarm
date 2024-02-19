@@ -1,0 +1,61 @@
+version: '3.9'
+
+services:
+  {{ role_name }}:
+    image: rabbitmq:3.8-alpine
+    hostname: "{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}"
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "SECRET_COOKIE"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    deploy:
+      mode: replicated
+      replicas: {{ stacks[stack_name][role_name]['replicas'] }}
+      endpoint_mode: vip
+      restart_policy:
+        condition: on-failure
+{% if stacks[stack_name][role_name]['placement'] is defined %}
+      placement:
+        constraints: [node.labels.name == {{ stacks[stack_name][role_name]['placement'] }}]
+{% endif %}
+    configs:
+      - source: rabbitmq.conf
+        target: /etc/rabbitmq/rabbitmq.conf
+      - source: rabbitmq-definitions.json
+        target: /etc/rabbitmq/rabbitmq-definitions.json
+      - source: rabbitmq-enabled-plugins.conf
+        target: /etc/rabbitmq/enabled_plugins
+    networks: {{ stacks[stack_name][role_name]['networks'] | list }}
+    extra_hosts: {{ stacks[stack_name][role_name]['extra_hosts'] }}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - {{ domain_volumes }}/{{ stack_name }}/{{ role_name }}/data/{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}:/var/lib/rabbitmq
+#      - rabbitmq:/var/lib/rabbitmq
+
+#  ubuntu:
+#    image: ubuntu
+#    hostname: "{% raw %}{{.Service.Name}}{% endraw %}"
+#    environment:
+#      REPLICAS: *replicas
+#    networks:
+#      - keydb_default
+#    command: '/bin/bash -c "apt-get update && apt-get -y install telnet iputils-ping mariadb-client-10.4 && sleep 100000"'
+
+configs:
+  rabbitmq-enabled-plugins.conf:
+    name: {{ config_files['rabbitmq-enabled-plugins.conf']['name'] }}
+    external: true
+  rabbitmq.conf:
+    name: {{ config_files['rabbitmq.conf']['name'] }}
+    external: true
+  rabbitmq-definitions.json:
+    name: {{ config_files['rabbitmq-definitions.json']['name'] }}
+    external: true
+
+networks: {{ stacks[stack_name][role_name]['networks'] }}
+
+#volumes:
+#  rabbitmq:
+#    name: 'rabbitmq'
+#    name: '{% raw %}{{.Service.Name}}_{{.Task.Slot}}{% endraw %}'
